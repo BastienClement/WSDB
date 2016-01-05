@@ -1,0 +1,282 @@
+body, input, button {
+	font-family:helvetica, ms shell dlg;
+}
+
+body {
+	background-image:url("");
+	background-position:center top;
+	background-repeat: no-repeat;
+}
+
+/* ------------------------------- */
+  
+div#bander {
+	position:fixe;
+	height:30px;
+	padding:10px 2px 2px 0px;
+	background-color:#F5F5F5;
+
+	border-radius: 3px 3px 0px 0px;
+	border-width: 1px 1px 0px 1px;
+	border-style: solid;
+}
+
+/* ------------------------------- */
+
+div#menu {
+	position:absolute;
+	height:100%;
+	width:0px;
+	background-color:#0A0A0A;
+	transition:width 250ms ease-out;
+	overflow:hidden;
+	color:F5F5F5;
+}
+div#menu.visible {
+	width:150px;
+}
+
+
+div#menu a {
+	width:148px;
+}
+
+/* ------------------------------- */
+
+div#cardDetail {
+	position:fixed;
+	left:25%;
+	top:100px;
+	z-index:20;
+	
+	background-color:#F5F5F5;
+	margin:auto;
+	padding:10px;
+ 
+	border:2px solid #0A0A0A; 
+	border-radius:5px;
+	
+	
+		width:50%;
+	height:500px;
+}
+
+div#cardDetail.visible {
+	width:50%;
+	height:500px;
+}
+
+div#detailBackground {
+	position:fixed;
+	background-color:#0A0A0A;
+	opacity:0.5;
+	margin-top:-8px;
+	margin-left:-8px;
+	z-index:10;
+}
+
+div#detailBackground.visible {
+	height:100%;
+	width:100%;
+}
+
+/* ------------------------------- */
+
+div#rightPanel {
+	position:absolute;
+	float:right;
+	right:8px;
+	height:100%;
+	width:20px;
+	transition:width 250ms ease-out;
+	overflow:hidden;
+	color:F5F5F5;
+}
+div#rightPanel.visible {
+	width:330px;
+}
+
+div#buttonRightPanel {
+	background-color:#0A0A0A;
+	border-bottom-left-radius:5px;
+	position:absolute;
+	float:left;
+	width:20px;
+	height:35px;
+	cursor:pointer;
+}
+
+div#deckContent {
+	background-color:#0A0A0A;
+	float:right;
+	width:0px;
+	height:100%;	
+	transition:width 250ms ease-out;
+	overflow:hidden;
+	text-align:left;
+}
+div#deckContent.visible {
+	width:305px;
+	padding:0px 5px;
+}
+
+div#deckContent hr {
+	color:#F5F5F5;
+}
+
+div#deckContent h1 {
+	font-size:17px;
+	font-weight:bold;
+}
+
+div.card {
+	width:100%;
+	height:40px;
+	border-color:white;
+	padding:3px 0px 3px 0px;
+	border-width:1px 0px 1px 0px;
+	border-style:solid;
+}
+
+div.quantity  {
+	float:left;
+	width:15%;
+	height:50%;
+	text-align:center;
+}
+
+div.number {
+	float:right;
+	width:80%;
+	height:50%;
+}
+
+div.name {
+	float:left;
+	overflow:hidden;
+	width:100%;
+	height:50%;
+	top:100px;
+	padding-top:1px;
+	white-space:nowrap;
+}
+
+div#cardDetail table, div#cardDetail td {
+	border:1px solid ;
+	border-collapse: collapse;
+	background-color:#F5F5F5;
+	color:#0A0A0A;
+	padding: 2px 2px 2px 2px;
+}
+
+td.cardDetailDescriptor {
+	width:60;
+	font-weight:bold;
+}
+
+/* ------------------------------- */
+
+div.content {
+	height:100%;
+	background-color:ff0000;
+}
+
+/* ------------------------------- */
+
+.button1 {
+	background-color: #0A0A0A;
+	border:1px solid #0A0A0A;
+	border-radius: 3px;
+    color: #F5F5F5;
+    padding: 5px 10px;
+	margin: 3px 2px 2px 2px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+	font-weight:bold;
+	cursor: pointer;
+		
+	transition-duration: 0.1s;	
+}
+.button1:hover {
+	background-color: #F5F5F5;
+	color:#0A0A0A;
+}
+
+.button2 {
+	background-color: #0A0A0A;
+	border:1px solid #0A0A0A;
+    color: #F5F5F5;
+    padding: 5px 0px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+	font-weight:bold;
+	cursor:pointer;
+		
+	transition-duration: 0.1s;	
+}
+.button2:hover {
+	background-color: #F5F5F5;
+	color:#0A0A0A;
+}
+
+.button3 {
+	background-color: #0A0A0A;
+	border:1px solid #0A0A0A;
+    color: #F5F5F5;
+    padding: 0px 2px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+	font-weight:bold;
+	cursor:pointer;
+		
+	transition-duration: 0.1s;	
+}
+.button3:hover {
+	background-color: #F5F5F5;
+	color:#0A0A0A;
+}
+
+/* ------------------------------- */
+/* LOGINN AND REGISTER*/ 
+div#login {
+	position:absolute;
+	top:0px;bottom:0px;left:0px;right:0px;
+	
+	background-color:#F5F5F5;
+	margin:auto;
+	padding:10px;
+	width:500px;
+	height:235px;
+ 
+	border:2px solid #0A0A0A; 
+	border-radius:5px;
+}
+
+form p {
+	font-size: 18px;
+}
+
+form p.error {
+	color:#FF0A0A;
+}
+ 
+input.textForm {
+	margin: 0 5%;
+	width: 90%; 
+	border: 1px solid #0A0A0A;
+	border-radius:2px;
+}
+
+input.textFormError {
+	margin: 0 5%;
+	width: 90%; 
+	border: 2px solid #FF0A0A;
+	border-radius:2px;
+}
+ 
+ 
