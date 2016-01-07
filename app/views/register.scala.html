@@ -1,0 +1,21 @@
+@import views.Page
+@(form: Form[RegisterData])(implicit request: UserRequest[_], messages: Messages)
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-2", "col-md-10") }
+@main("Register", Page.Other) {
+	<div class="page-header">
+		<h1>Create new account</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-5">
+			@b3.form(routes.Auth.registerPost) {
+				@b3.text(form("login"), '_label -> "Login", 'placeholder -> "Login name")
+				@b3.email(form("mail"), '_label -> "E-mail", 'placeholder -> "E-mail address")
+				@b3.password(form("pass"), '_label -> "Password", 'placeholder -> "Password")
+				@b3.free() {
+					<button type="submit" class="btn btn-primary">Register</button>
+					<a href="/login">Already have an account?</a>
+				}
+			}
+		</div>
+	</div>
+}

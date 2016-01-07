@@ -1,11 +1,12 @@
-@(title: String)(content: Html)
+@import views.Page
+@(title: String, page: Page.Value)(content: Html)(implicit request: UserRequest[_])
 <!DOCTYPE html>
 <html>
 	<head>
 		<title>@title</title>
-		<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/style.css")">
 		<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.css")">
-		<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-theme.css")">
+		<!--<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-theme.css")">-->
+		<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/style.css")">
 		<script src="@routes.Assets.at("javascripts/jquery-2.1.4.min.js")" type="text/javascript"></script>
 		<script src="@routes.Assets.at("javascripts/webcomponents-lite.min.js")" type="text/javascript"></script>
 		<script src="@routes.Assets.at("javascripts/bootstrap.min.js")" type="text/javascript"></script>
@@ -14,30 +15,44 @@
 	<body>
 		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
-				<a class="navbar-brand" href="#">WS Deck Builder</a>
+				<a class="navbar-brand" href="/">WS Deck Builder</a>
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="#">Collection</a></li>
-					<li><a href="#">Decks</a></li>
+					<li @if(page == Page.Collection) { class="active" }><a href="/">Collection</a></li>
+					@if(request.authenticated) {
+						<li @if(page == Page.Decks) {class="active" }><a href="/decks">Decks</a></li>
+					}
 				</ul>
 				<div class="navbar-right">
 					<div class="btn-group btn-group-sm">
-						<button type="button" class="btn btn-default navbar-btn">
-							<span class="glyphicon glyphicon-user"></span>
-							Galedric
-						</button>
+						<a @if(request.authenticated) { href="/account" } else { href="/login" }
+							class="btn btn-default navbar-btn">
+							@if(request.authenticated) {
+								<span class="glyphicon glyphicon-user"></span>
+								@request.user.login
+							} else {
+								Login
+							}
+						</a>
 						<button type="button" class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
-							<li><a href="#">Login</a></li>
-							<li><a href="#">Register</a></li>
-							<li><a href="#">Account</a></li>
-							<li><a href="#">Logout</a></li>
+							@if(request.authenticated) {
+								<li><a href="/account">Account</a></li>
+								<li><a href="/logout">Logout</a></li>
+							} else {
+								<li><a href="/login">Login</a></li>
+								<li><a href="/register">Register</a></li>
+							}
 						</ul>
 					</div>
 				</div>
 			</div>
 		</nav>
-		@content
+		<div class="wrapper">
+			<div class="container">
+				@content
+			</div>
+		</div>
 	</body>
 </html>

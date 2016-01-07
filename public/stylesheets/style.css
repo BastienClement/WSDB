@@ -279,7 +279,20 @@ input.textFormError {
 	border-radius:2px;
 }
 
-/** Bootstrap fixes **/
-.navbar-right .btn-group.btn-group-sm {
-	margin-top: 2px;
+/** --- **/
+
+body {
+	padding-top: 50px;
+	background-color: #f8f8f8;
 }
+
+.wrapper {
+	background-color: #fff;
+	border-bottom: 1px solid #e7e7e7;
+	padding-bottom: 30px;
+}
+
+/** Bootstrap fixes **/
+.navbar-right .btn-group.btn-group-sm { margin-top: 2px; }
+form button + a { margin-left: 10px; }
+.page-header { margin-top: 25px; }
