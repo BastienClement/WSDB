@@ -1,23 +1,19 @@
 @import views.Page
-@()(implicit request: UserRequest[_])
+@(form: Form[LoginData])(implicit request: UserRequest[_], messages: Messages)
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-2", "col-md-10") }
 @main("Login", Page.Other) {
 	<div class="page-header">
 		<h1>Login</h1>
 	</div>
 	<div class="row">
-		<div class="col-md-4">
-			@helper.form(action = routes.Auth.registerPost()) {
-				<div class="form-group">
-					<label for="login-name">Login</label>
-					<input type="email" class="form-control" id="login-name" placeholder="Login name">
-				</div>
-				<div class="form-group">
-					<label for="login-passwd">Password</label>
-					<input type="password" class="form-control" id="login-passwd" placeholder="Password">
-				</div>
-				<button type="submit" class="btn btn-default">Login</button>
-				<!--suppress CssUnknownProperty -->
-				<a href="/register">Register</a>
+		<div class="col-md-6">
+			@b3.form(routes.Auth.loginPost) {
+				@b3.text(form("login"), '_label -> "Login", 'placeholder -> "Login name")
+				@b3.password(form("pass"), '_label -> "Password", 'placeholder -> "Password")
+				@b3.free() {
+					<button type="submit" class="btn btn-primary">Login</button>
+					<a href="/register">Create account</a>
+				}
 			}
 		</div>
 	</div>

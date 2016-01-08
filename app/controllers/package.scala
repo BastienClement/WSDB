@@ -1,3 +1,4 @@
+import java.sql.SQLIntegrityConstraintViolationException
 import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json.Json
@@ -16,6 +17,11 @@ package object controllers {
 	/** Implicitly use the global ExecutionContext */
 	implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
 
+	/** Adds the .contains method on Throwables to check if message contains a given string */
+	implicit class ThrowableMessageContains[R](val t: Throwable) extends AnyVal {
+		@inline def contains(s: CharSequence) = t.getMessage.contains(s)
+	}
+
 	/** Adds the .run method directly on DBIOAction objects */
 	implicit class DBIOActionExecutor[R](val a: DBIOAction[R, NoStream, Nothing]) extends AnyVal {
 		@inline def run = DB.run(a)
@@ -23,6 +29,9 @@ package object controllers {
 
 	/** Implicitly executes DBIOAction if context require a Future[R] */
 	implicit def DBIOActionImplicitExecutor[R](a: DBIOAction[R, NoStream, Nothing]): Future[R] = DB.run(a)
+
+	/** Implicitly wrap Result in a Future if async is expected */
+	implicit def FutureResult(res: Result): Future[Result] = Future.successful(res)
 
 	/** Connected user **/
 	case class User(login: String, email: String)
@@ -54,4 +63,7 @@ package object controllers {
 			else None
 		}
 	}
+
+	/** Alias for long SQL exception names */
+	type IntegrityViolation = SQLIntegrityConstraintViolationException
 }

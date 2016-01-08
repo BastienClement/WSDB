@@ -6,7 +6,13 @@
 		<h1>Create new account</h1>
 	</div>
 	<div class="row">
-		<div class="col-md-5">
+		<div class="col-md-6">
+			@if(form.error("unknown").isDefined) {
+				<div class="alert alert-danger">
+					<strong>Error:</strong>
+					@form.error("unknown").get.message
+				</div>
+			}
 			@b3.form(routes.Auth.registerPost) {
 				@b3.text(form("login"), '_label -> "Login", 'placeholder -> "Login name")
 				@b3.email(form("mail"), '_label -> "E-mail", 'placeholder -> "E-mail address")
