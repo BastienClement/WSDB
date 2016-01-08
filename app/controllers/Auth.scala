@@ -14,6 +14,10 @@ case class LoginData(login: String, pass: String)
 case class RegisterData(login: String, mail: String, pass: String)
 
 class Auth @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
+	//
+	// --- Login ---
+	//
+
 	val loginForm = Form(
 		mapping(
 			"login" -> nonEmptyText(3, 32),
@@ -21,13 +25,32 @@ class Auth @Inject()(val messagesApi: MessagesApi) extends Controller with I18nS
 		)(LoginData.apply)(LoginData.unapply)
 	)
 
-	def login = UserAction { implicit req =>
+	def login = Unauthenticated { implicit req =>
 		Ok(views.html.login(loginForm))
 	}
 
-	def loginPost = UserAction { implicit req =>
-		Ok(views.html.login(loginForm))
+	def loginPost = Unauthenticated.async { implicit req =>
+		val form = loginForm.bindFromRequest
+		form.fold(
+			error => BadRequest(views.html.login(error)),
+			data => {
+				sqlu"""
+			      UPDATE users SET lastConnection = NOW()
+			      WHERE login = LOWER(${data.login}) AND password = HASHPASS(login, ${data.pass})
+					LIMIT 1
+			   """.run map {
+					case count if count < 1 =>
+						Unauthorized(views.html.login(form.withError("global", "Login name or password is invalid")))
+					case _ =>
+						Redirect("/").withSession(req.session + ("login" -> data.login))
+				}
+			}
+		)
 	}
+
+	//
+	// --- Register ---
+	//
 
 	val registerForm = Form(
 		mapping(
@@ -37,29 +60,37 @@ class Auth @Inject()(val messagesApi: MessagesApi) extends Controller with I18nS
 		)(RegisterData.apply)(RegisterData.unapply)
 	)
 
-	def register = UserAction { implicit req =>
+	def register = Unauthenticated { implicit req =>
 		Ok(views.html.register(registerForm))
 	}
 
-	def registerPost = UserAction.async { implicit req =>
+	def registerPost = Unauthenticated.async { implicit req =>
 		val form = registerForm.bindFromRequest
 		form.fold(
 			error => BadRequest(views.html.register(error)),
 			data => {
 				sqlu"""
 					INSERT INTO users
-					SET login = LOWER(${data.login}), email = ${data.mail}, password = HASHPASS(${data.pass}, ${data.login})
+					SET login = LOWER(${data.login}), email = ${data.mail}, password = HASHPASS(LOWER(${data.login}), ${data.pass})
 				""".run map { case _ =>
 					Redirect("/login")
 				} recover { case error =>
 					val (field, message) = error match {
 						case e: IntegrityViolation if e.contains("PRIMARY") => "login" -> "Username is already taken"
 						case e: IntegrityViolation if e.contains("email") => "mail" -> "E-mail address is already taken"
-						case e => "unknown" -> e.getMessage
+						case e => "global" -> e.getMessage
 					}
 					BadRequest(views.html.register(form.withError(field, message)))
 				}
 			}
 		)
+	}
+
+	//
+	// --- Logout ---
+	//
+
+	def logout = Authenticated {
+		Redirect("/").withNewSession
 	}
 }

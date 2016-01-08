@@ -7,10 +7,10 @@
 	</div>
 	<div class="row">
 		<div class="col-md-6">
-			@if(form.error("unknown").isDefined) {
+			@if(form.error("global").isDefined) {
 				<div class="alert alert-danger">
 					<strong>Error:</strong>
-					@form.error("unknown").get.message
+					@form.error("global").get.message
 				</div>
 			}
 			@b3.form(routes.Auth.registerPost) {

@@ -8,6 +8,7 @@ GET         /login               controllers.Auth.login
 POST        /login               controllers.Auth.loginPost
 GET         /register            controllers.Auth.register
 POST        /register            controllers.Auth.registerPost
+GET         /logout              controllers.Auth.logout
 
 # API
 GET         /api/test            controllers.Api.test

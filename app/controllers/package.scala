@@ -2,8 +2,8 @@ import java.sql.SQLIntegrityConstraintViolationException
 import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json.Json
+import play.api.mvc.Results.{Forbidden, Redirect}
 import play.api.mvc._
-import play.api.mvc.Results.Forbidden
 import scala.concurrent.Future
 import scala.language.implicitConversions
 import slick.dbio.{DBIOAction, NoStream}
@@ -41,9 +41,9 @@ package object controllers {
 
 	/** Authenticated action */
 	object UserAction extends ActionBuilder[UserRequest] with ActionTransformer[Request, UserRequest] {
-		def transform[A](request: Request[A]) = request.session.get("username") match {
-			case Some(username) =>
-				val query = sql"SELECT login, email FROM users WHERE active = 1 AND login = $username".as[(String, String)]
+		def transform[A](request: Request[A]) = request.session.get("login") match {
+			case Some(login) =>
+				val query = sql"SELECT UCWORDS(login), email FROM users WHERE active = 1 AND login = ${login}".as[(String, String)]
 				query.head.map(User.tupled).run.map(user => new UserRequest(user, true, request))
 			case None => Future.successful(new UserRequest(null, false, request))
 		}
@@ -56,7 +56,16 @@ package object controllers {
 		}
 	}
 
+	object UnauthenticatedFilter extends ActionFilter[UserRequest] {
+		def filter[A](request: UserRequest[A]) = Future.successful {
+			if (request.authenticated) Some(Redirect("/"))
+			else None
+		}
+	}
+
 	val Authenticated = UserAction andThen AuthenticatedFilter
+	val Unauthenticated = UserAction andThen UnauthenticatedFilter
+
 	val ApiAuthenticated = UserAction andThen new ActionFilter[UserRequest] {
 		def filter[A](request: UserRequest[A]) = Future.successful {
 			if (!request.authenticated) Some(Forbidden(Json.obj("error" -> "Forbidden")))
