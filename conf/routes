@@ -4,6 +4,9 @@
 
 # Pages
 GET         /                    controllers.Application.index
+GET         /decks               controllers.Application.decks
+
+# Auth
 GET         /login               controllers.Auth.login
 POST        /login               controllers.Auth.loginPost
 GET         /register            controllers.Auth.register

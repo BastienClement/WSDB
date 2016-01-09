@@ -296,3 +296,8 @@ body {
 .navbar-right .btn-group.btn-group-sm { margin-top: 2px; }
 form button + a { margin-left: 10px; }
 .page-header { margin-top: 25px; }
+
+.label {
+	position: relative;
+	top: -1px;
+}

@@ -1,5 +1,12 @@
 @import views.Page
 @()(implicit request: UserRequest[_])
 @main("Card collection", Page.Collection) {
-
+	<div class="page-header">
+		<h1>Collection</h1>
+	</div>
+	<ol class="breadcrumb">
+		<li><a href="/">Universes</a></li>
+		<li><a href="#">Library</a></li>
+		<li class="active">Data</li>
+	</ol>
 }

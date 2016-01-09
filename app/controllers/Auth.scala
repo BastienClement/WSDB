@@ -1,14 +1,11 @@
 package controllers
 
 import com.google.inject.Inject
-import java.sql.SQLIntegrityConstraintViolationException
-import play.api
-import play.api.data
-import play.api.data._
+import controllers.mysql._
 import play.api.data.Forms._
+import play.api.data._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import controllers.mysql._
 
 case class LoginData(login: String, pass: String)
 case class RegisterData(login: String, mail: String, pass: String)
@@ -34,11 +31,13 @@ class Auth @Inject()(val messagesApi: MessagesApi) extends Controller with I18nS
 		form.fold(
 			error => BadRequest(views.html.login(error)),
 			data => {
+				val login = data.login
+				val pass = data.pass
 				sqlu"""
-			      UPDATE users SET lastConnection = NOW()
-			      WHERE login = LOWER(${data.login}) AND password = HASHPASS(login, ${data.pass})
+					UPDATE users SET lastConnection = NOW()
+					WHERE login = LOWER($login) AND password = HASHPASS(login, $pass)
 					LIMIT 1
-			   """.run map {
+				""".run map {
 					case count if count < 1 =>
 						Unauthorized(views.html.login(form.withError("global", "Login name or password is invalid")))
 					case _ =>
@@ -69,9 +68,12 @@ class Auth @Inject()(val messagesApi: MessagesApi) extends Controller with I18nS
 		form.fold(
 			error => BadRequest(views.html.register(error)),
 			data => {
+				val login = data.login
+				val mail = data.mail
+				val pass = data.pass
 				sqlu"""
 					INSERT INTO users
-					SET login = LOWER(${data.login}), email = ${data.mail}, password = HASHPASS(LOWER(${data.login}), ${data.pass})
+					SET login = LOWER($login), email = $mail, password = HASHPASS($login, $pass)
 				""".run map { case _ =>
 					Redirect("/login")
 				} recover { case error =>
