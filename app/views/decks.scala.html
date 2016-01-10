@@ -37,9 +37,9 @@
 								}
 								<span style="color: #999;">/ 50</span>
 							</td>
-							<td class="text-right">
+							<td class="text-right actions">
 								<button class="btn btn-xs btn-default">Edit</button>
-								<button class="btn btn-xs btn-danger">Delete</button>
+								<button class="btn btn-xs btn-danger" data-id="@deck.id" style="width: 50px; text-align: center;">Delete</button>
 							</td>
 						</tr>
 					}
@@ -66,4 +66,23 @@
 			<button class="btn btn-primary">New deck</button>
 		</div>
 	</div>
+	<form action="/decks/delete" method="post" id="delete-form">
+		<input type="hidden" name="id" value="" id="delete-id">
+	</form>
+	<script>
+		$(".actions .btn-danger").click(function(ev) {
+			var btn = ev.target;
+			if (btn.sure) {
+				clearTimeout(btn.sure);
+				$("#delete-id").val(btn.dataset.id);
+				$("#delete-form").submit();
+			} else {
+				btn.sure = setTimeout(function() {
+					btn.innerText = "Delete";
+					btn.sure = void 0;
+				}, 2000);
+				btn.innerText = "Sure?";
+			}
+		});
+	</script>
 }

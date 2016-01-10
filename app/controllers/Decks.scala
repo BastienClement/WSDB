@@ -2,6 +2,7 @@ package controllers
 
 import controllers.mysql._
 import play.api.mvc.Controller
+import scala.concurrent.Future
 
 object Decks {
 	case class ListItem(id: Int, name: String, universes: Seq[(String, String)], ncx_count: Int, cx_count: Int)
@@ -26,6 +27,23 @@ class Decks extends Controller {
 			}
 		}.map {
 			case decks => Ok(views.html.decks(decks))
+		}
+	}
+
+	def delete = Authenticated.async(parse.urlFormEncoded) { implicit req =>
+		(for {
+			form_ids <- req.body.get("id")
+			str_id <- form_ids.headOption
+			id <- str_id.toOptInt
+		} yield {
+			val user = req.user.name
+			sqlu"""
+				DELETE FROM decks
+				WHERE id = $id AND user = $user
+				LIMIT 1
+			""".run
+		}).getOrElse(Future.successful()).map {
+			_ => Redirect("/decks")
 		}
 	}
 }

@@ -7,6 +7,7 @@ GET         /                    controllers.Collection.index
 
 # Decks
 GET         /decks               controllers.Decks.list
+POST        /decks/delete        controllers.Decks.delete
 
 # Auth
 GET         /login               controllers.Auth.login

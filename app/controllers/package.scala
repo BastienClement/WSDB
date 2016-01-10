@@ -31,6 +31,17 @@ package object controllers {
 		@inline def run = DB.run(a)
 	}
 
+	/** Adds utility functions on String */
+	implicit class WSStringUtils[R](val str: String) extends AnyVal {
+		@inline def toOptInt: Option[Int] = {
+			try {
+				Some(str.toInt)
+			} catch {
+				case _ => None
+			}
+		}
+	}
+
 	/** Implicitly executes DBIOAction[R, _, _] if context require a Future[R] */
 	implicit def DBIOActionImplicitExecutor[R](a: DBIOAction[R, NoStream, Nothing]): Future[R] = DB.run(a)
 
