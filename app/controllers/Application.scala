@@ -5,6 +5,11 @@ import play.api.mvc._
 
 case class Deck(id: Int, name: String, universes: Seq[(String, String)], ncx_count: Int, cx_count: Int)
 
+object Collection {
+	type UniverseItem = (String, String, String, Int, Int)
+	type UniversesList = (Iterable[UniverseItem], Iterable[UniverseItem])
+}
+
 class Application extends Controller {
 	def index = UserAction.async { implicit req =>
 		sql"""
@@ -15,7 +20,7 @@ class Application extends Controller {
 				JOIN aspects AS a ON a.id = u.aspect
 			ORDER BY a.id ASC, u.name ASC
 	  """.as[(String, String, String, Int, Int)].run.map { universes =>
-			Ok(views.html.index(universes))
+			Ok(views.html.index(universes.partition(u => u._1 == "W")))
 		}
 	}
 
