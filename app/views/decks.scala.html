@@ -23,7 +23,7 @@
 							</td>
 							<td>
 								@for(universe <- deck.universes) {
-									<a href="#" class="label label-default">@universe</a>
+									<a href="/cards/@universe._1" class="label label-default">@universe._2</a>
 								}
 								@if(deck.universes.isEmpty) {
 									-

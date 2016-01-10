@@ -1,12 +1,32 @@
 @import views.Page
-@()(implicit request: UserRequest[_])
+@(universes: Iterable[(String, String, String, Int, Int)])(implicit request: UserRequest[_])
 @main("Card collection", Page.Collection) {
 	<div class="page-header">
 		<h1>Collection</h1>
 	</div>
-	<ol class="breadcrumb">
-		<li><a href="/">Universes</a></li>
-		<li><a href="#">Library</a></li>
-		<li class="active">Data</li>
-	</ol>
+	<table class="table table-condensed">
+		<thead>
+			<tr>
+				<th style="width: 30px;"></th>
+				<th>Universe</th>
+				<th class="text-right">Extensions</th>
+				<th class="text-right">Cards</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for(universe <- universes) {
+				<tr>
+					<td><span class="label label-aspect @universe._1">@universe._1</span></td>
+					<td><a href="/cards/@universe._2">@universe._3</a></td>
+					<td class="text-right">@universe._4</td>
+					<td class="text-right">@universe._5</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	<style>
+		.label-aspect { font-family: monospace; font-weight: 600; }
+		.label-aspect.W { color: #333; background: #eee; }
+		.label-aspect.S { color: #eee; background: #333; }
+	</style>
 }
