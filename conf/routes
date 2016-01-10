@@ -3,8 +3,10 @@
 # ~~~~
 
 # Pages
-GET         /                    controllers.Application.index
-GET         /decks               controllers.Application.decks
+GET         /                    controllers.Collection.index
+
+# Decks
+GET         /decks               controllers.Decks.list
 
 # Auth
 GET         /login               controllers.Auth.login

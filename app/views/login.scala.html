@@ -1,5 +1,5 @@
 @import views.Page
-@(form: Form[LoginData])(implicit request: UserRequest[_], messages: Messages)
+@(form: Form[Auth.LoginData])(implicit request: UserRequest[_], messages: Messages)
 @implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-2", "col-md-10") }
 @main("Login", Page.Other) {
 	<div class="page-header">

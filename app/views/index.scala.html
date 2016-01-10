@@ -1,7 +1,7 @@
 @import views.Page
 @(universes: Collection.UniversesList)(implicit request: UserRequest[_])
 
-@universesList(universes: Iterable[Collection.UniverseItem]) = {
+@universesList(universes: Iterable[Collection.UniverseInfo]) = {
 	<table class="table table-condensed">
 		<thead>
 			<tr>
@@ -13,10 +13,10 @@
 		<tbody>
 		@for(universe <- universes) {
 			<tr>
-				<td><span class="label label-aspect @universe._1">@universe._1</span></td>
-				<td><a href="/cards/@universe._2">@universe._3</a></td>
-				<td class="text-right">@universe._4</td>
-				<td class="text-right">@universe._5</td>
+				<td><span class="label label-aspect @universe.aspect">@universe.aspect</span></td>
+				<td><a href="/cards/@universe.id">@universe.name</a></td>
+				<td class="text-right">@universe.extensions</td>
+				<td class="text-right">@universe.cards</td>
 			</tr>
 		}
 		</tbody>
@@ -27,6 +27,10 @@
 	<div class="page-header">
 		<h1>Collection</h1>
 	</div>
+	<ol class="breadcrumb">
+		<li>Card list</li>
+		<li></li>
+	</ol>
 	<div class="row">
 		<div class="col-md-6">
 			@universesList(universes._1)
@@ -35,9 +39,4 @@
 			@universesList(universes._2)
 		</div>
 	</div>
-	<style>
-		.label-aspect { font-family: monospace; font-weight: 600; }
-		.label-aspect.W { color: #333; background: #eee; }
-		.label-aspect.S { color: #eee; background: #333; }
-	</style>
 }

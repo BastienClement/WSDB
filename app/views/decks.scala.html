@@ -1,5 +1,5 @@
 @import views.Page
-@(decks: Iterable[Deck])(implicit request: UserRequest[_])
+@(decks: Iterable[Decks.ListItem])(implicit request: UserRequest[_])
 @main("Decks management", Page.Decks) {
 	<div class="page-header">
 		<h1>Decks management</h1>

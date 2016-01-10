@@ -292,6 +292,10 @@ body {
 	padding-bottom: 30px;
 }
 
+.label-aspect { font-family: monospace; font-weight: 600; }
+.label-aspect.W { color: #333; background: #eee; }
+.label-aspect.S { color: #eee; background: #333; }
+
 /** Bootstrap fixes **/
 .navbar-right .btn-group.btn-group-sm { margin-top: 2px; }
 form button + a { margin-left: 10px; }
