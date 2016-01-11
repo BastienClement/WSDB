@@ -13,7 +13,7 @@ object Auth {
 	case class RegisterData(login: String, mail: String, pass: String)
 }
 
-class Auth @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
+class AuthController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
 	//
 	// --- Login ---
 	//
@@ -44,7 +44,7 @@ class Auth @Inject()(val messagesApi: MessagesApi) extends Controller with I18nS
 					case count if count < 1 =>
 						Unauthorized(views.html.login(form.withError("global", "Login name or password is invalid")))
 					case _ =>
-						Redirect("/").withSession(req.session + ("login" -> data.login))
+						Redirect(routes.CollectionController.index()).withSession(req.session + ("login" -> data.login))
 				}
 			}
 		)
@@ -96,6 +96,6 @@ class Auth @Inject()(val messagesApi: MessagesApi) extends Controller with I18nS
 	//
 
 	def logout = Authenticated {
-		Redirect("/").withNewSession
+		Redirect(routes.CollectionController.index()).withNewSession
 	}
 }

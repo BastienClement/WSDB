@@ -13,7 +13,7 @@
 					@form.error("global").get.message
 				</div>
 			}
-			@b3.form(routes.Auth.registerPost) {
+			@b3.form(routes.AuthController.registerPost) {
 				@b3.text(form("login"), '_label -> "Login", 'placeholder -> "Login name")
 				@b3.email(form("mail"), '_label -> "E-mail", 'placeholder -> "E-mail address")
 				@b3.password(form("pass"), '_label -> "Password", 'placeholder -> "Password")

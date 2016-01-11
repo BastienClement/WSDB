@@ -35,13 +35,13 @@
 						<button type="button" class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
 							<span class="caret"></span>
 						</button>
-						<ul class="dropdown-menu" style="margin-top: -10px;">
+						<ul class="dropdown-menu" style="border-top-left-radius: 0; border-top-right-radius: ">
 							@if(request.authenticated) {
 								<li><a href="/account">Account</a></li>
 								<li><a href="/logout">Logout</a></li>
 							} else {
-								<li><a href="/login">Login</a></li>
-								<li><a href="/register">Register</a></li>
+								<li><a href="@routes.AuthController.login()">Login</a></li>
+								<li><a href="@routes.AuthController.register()">Register</a></li>
 							}
 						</ul>
 					</div>

@@ -13,7 +13,7 @@ object Collection {
 	type UniversesList = (Iterable[UniverseInfo], Iterable[UniverseInfo])
 }
 
-class Collection extends Controller {
+class CollectionController extends Controller {
 	def index = UserAction.async { implicit req =>
 		sql"""
 			SELECT a.id, u.id, u.name,

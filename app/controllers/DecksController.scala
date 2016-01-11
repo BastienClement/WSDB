@@ -1,14 +1,29 @@
 package controllers
 
+import com.google.inject.Inject
+import controllers.Decks.NewDeckData
 import controllers.mysql._
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Controller
 import scala.concurrent.Future
 
 object Decks {
 	case class ListItem(id: Int, name: String, universes: Seq[(String, String)], ncx_count: Int, cx_count: Int)
+	case class NewDeckData(name: String)
 }
 
-class Decks extends Controller {
+class DecksController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
+	val newDeckForm = Form(
+		mapping(
+			"name" -> nonEmptyText(1, 32)
+		)(NewDeckData.apply)(NewDeckData.unapply)
+	)
+
+	/**
+	  * Displays the list of decks created by the user.
+	  */
 	def list = Authenticated.async { implicit req =>
 		val user = req.user.name
 		sql"""
@@ -26,10 +41,24 @@ class Decks extends Controller {
 				Decks.ListItem(data.head._1, data.head._2, universes, data.map(_._5).sum, data.map(_._6).sum)
 			}
 		}.map {
-			case decks => Ok(views.html.decks(decks))
+			case decks => Ok(views.html.decks(decks, newDeckForm))
 		}
 	}
 
+	/**
+	  * Create a new deck.
+	  */
+	def create = Authenticated.async { implicit req =>
+		val form = newDeckForm.bindFromRequest
+		form.fold(
+			error => Redirect(routes.DecksController.list()).flashing("new_deck_err" -> "Invalid deck name"),
+			_ => ???
+		)
+	}
+
+	/**
+	  * Invoked when deleting a deck.
+	  */
 	def delete = Authenticated.async(parse.urlFormEncoded) { implicit req =>
 		(for {
 			form_ids <- req.body.get("id")
@@ -42,8 +71,8 @@ class Decks extends Controller {
 				WHERE id = $id AND user = $user
 				LIMIT 1
 			""".run
-		}).getOrElse(Future.successful()).map {
-			_ => Redirect("/decks")
+		}).getOrElse(Future.successful(null)).recover { case _ => () }.map {
+			_ => Redirect(routes.DecksController.list())
 		}
 	}
 }

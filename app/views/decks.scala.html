@@ -1,5 +1,6 @@
 @import views.Page
-@(decks: Iterable[Decks.ListItem])(implicit request: UserRequest[_])
+@import b3.vertical.fieldConstructor
+@(decks: Iterable[Decks.ListItem], newDeck: Form[Decks.NewDeckData])(implicit request: UserRequest[_], messages: Messages)
 @main("Decks management", Page.Decks) {
 	<div class="page-header">
 		<h1>Decks management</h1>
@@ -9,6 +10,7 @@
 			<table class="table">
 				<thead>
 					<tr>
+						<th style="width: 30px;"></th>
 						<th>Deck name</th>
 						<th>Universe</th>
 						<th class="text-right">Card count</th>
@@ -18,8 +20,9 @@
 				<tbody>
 					@for(deck <- decks) {
 						<tr>
+							<td style="color: #999;">#@deck.id</td>
 							<td>
-								<a href="#">@deck.name</a>
+								<a href="/decks/view/@deck.id">@deck.name</a>
 							</td>
 							<td>
 								@for(universe <- deck.universes) {
@@ -53,20 +56,20 @@
 			}
 		</div>
 		<div class="col-md-3">
-			<div class="panel panel-default">
-				<div class="panel-heading">Decks</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h3 class="panel-title">Create new deck</h3>
+				</div>
 				<div class="panel-body">
-					Write something here.
+					@b3.form(routes.DecksController.create) {
+						@b3.text(newDeck("name"), 'placeholder -> "Deck name", 'class -> "input-sm")
+						<input type="submit" class="btn btn-primary btn-sm" value="Create">
+					}
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-9">
-			<button class="btn btn-primary">New deck</button>
-		</div>
-	</div>
-	<form action="/decks/delete" method="post" id="delete-form">
+	<form action="@routes.DecksController.delete" method="POST" id="delete-form">
 		<input type="hidden" name="id" value="" id="delete-id">
 	</form>
 	<script>

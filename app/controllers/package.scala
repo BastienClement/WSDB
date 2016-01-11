@@ -1,7 +1,6 @@
 import java.sql.SQLIntegrityConstraintViolationException
 import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
-import play.api.libs.json.Json
 import play.api.mvc.Results.{Forbidden, Redirect}
 import play.api.mvc._
 import scala.collection.mutable
@@ -37,7 +36,7 @@ package object controllers {
 			try {
 				Some(str.toInt)
 			} catch {
-				case _ => None
+				case _: Throwable => None
 			}
 		}
 	}
@@ -100,15 +99,7 @@ package object controllers {
 	/** Only allow un-authenticated users to access the action */
 	val Unauthenticated = UserAction andThen new ActionFilter[UserRequest] {
 		def filter[A](request: UserRequest[A]) = Future.successful {
-			if (request.authenticated) Some(Redirect("/"))
-			else None
-		}
-	}
-
-	/** Variation for JSON-returning actions */
-	val ApiAuthenticated = UserAction andThen new ActionFilter[UserRequest] {
-		def filter[A](request: UserRequest[A]) = Future.successful {
-			if (!request.authenticated) Some(Forbidden(Json.obj("error" -> "Forbidden")))
+			if (request.authenticated) Some(Redirect(routes.CollectionController.index()))
 			else None
 		}
 	}

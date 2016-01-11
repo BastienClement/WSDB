@@ -3,21 +3,19 @@
 # ~~~~
 
 # Pages
-GET         /                    controllers.Collection.index
+GET         /                    controllers.CollectionController.index
 
 # Decks
-GET         /decks               controllers.Decks.list
-POST        /decks/delete        controllers.Decks.delete
+GET         /decks               controllers.DecksController.list
+POST        /decks/delete        controllers.DecksController.delete
+POST        /decks/create        controllers.DecksController.create
 
 # Auth
-GET         /login               controllers.Auth.login
-POST        /login               controllers.Auth.loginPost
-GET         /register            controllers.Auth.register
-POST        /register            controllers.Auth.registerPost
-GET         /logout              controllers.Auth.logout
-
-# API
-GET         /api/test            controllers.Api.test
+GET         /login               controllers.AuthController.login
+POST        /login               controllers.AuthController.loginPost
+GET         /register            controllers.AuthController.register
+POST        /register            controllers.AuthController.registerPost
+GET         /logout              controllers.AuthController.logout
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file        controllers.Assets.at(path="/public", file)
