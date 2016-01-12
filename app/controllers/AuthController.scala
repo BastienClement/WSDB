@@ -34,11 +34,9 @@ class AuthController @Inject()(val messagesApi: MessagesApi) extends Controller 
 		form.fold(
 			error => BadRequest(views.html.login(error)),
 			data => {
-				val login = data.login
-				val pass = data.pass
 				sqlu"""
 					UPDATE users SET lastConnection = NOW()
-					WHERE login = LOWER($login) AND password = HASHPASS(login, $pass)
+					WHERE login = LOWER(${data.login}) AND password = HASHPASS(login, ${data.pass})
 					LIMIT 1
 				""".run map {
 					case count if count < 1 =>
@@ -71,12 +69,9 @@ class AuthController @Inject()(val messagesApi: MessagesApi) extends Controller 
 		form.fold(
 			error => BadRequest(views.html.register(error)),
 			data => {
-				val login = data.login
-				val mail = data.mail
-				val pass = data.pass
 				sqlu"""
 					INSERT INTO users
-					SET login = LOWER($login), email = $mail, password = HASHPASS($login, $pass)
+					SET login = LOWER(${data.login}), email = ${data.mail}, password = HASHPASS(${data.login}, ${data.pass})
 				""".run map { case _ =>
 					Redirect("/login")
 				} recover { case error =>

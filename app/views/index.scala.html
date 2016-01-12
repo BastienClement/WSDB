@@ -1,7 +1,7 @@
 @import views.Page
 @(universes: Collection.UniversesList)(implicit request: UserRequest[_])
 
-@universesList(universes: Iterable[Collection.UniverseInfo]) = {
+@universesList(universes: Iterable[Collection.UniverseRow]) = {
 	<table class="table table-condensed">
 		<thead>
 			<tr>

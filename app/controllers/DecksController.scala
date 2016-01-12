@@ -8,9 +8,11 @@ import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Controller
 import scala.concurrent.Future
+import scala.util.Success
+import slick.jdbc.GetResult
 
 object Decks {
-	case class ListItem(id: Int, name: String, universes: Seq[(String, String)], ncx_count: Int, cx_count: Int)
+	case class ListRow(id: Int, name: String, universes: Seq[(String, String)], ncx_count: Int, cx_count: Int)
 	case class NewDeckData(name: String)
 }
 
@@ -25,23 +27,35 @@ class DecksController @Inject()(val messagesApi: MessagesApi) extends Controller
 	  * Displays the list of decks created by the user.
 	  */
 	def list = Authenticated.async { implicit req =>
-		val user = req.user.name
+		case class Deck(id: Int, name: String)
+		case class Universe(id: Option[String], name: Option[String]) {
+			require(id.isDefined == name.isDefined)
+			def isDefined = id.isDefined
+			def get = (id.get, name.get)
+		}
+		case class Count(ncx: Int, cx: Int)
+		case class Row(deck: Deck, universe: Universe, count: Count)
+		implicit val getRow = GetResult(r => Row(Deck(r.<<, r.<<), Universe(r.<<, r.<<), Count(r.<<, r.<<)))
+
 		sql"""
 			SELECT DISTINCT d.id, d.name, dc.universe, dc.universe_name,
-				(SELECT COALESCE(SUM(quantity), 0) FROM deck_cards
+				(SELECT IFNULL(SUM(quantity), 0) FROM deck_cards
 				 WHERE deck_id = d.id AND universe = dc.universe AND type != 'CX'),
-				(SELECT COALESCE(SUM(quantity), 0) FROM deck_cards WHERE deck_id = d.id AND universe = dc.universe AND type = 'CX')
+				(SELECT IFNULL(SUM(quantity), 0) FROM deck_cards
+				 WHERE deck_id = d.id AND universe = dc.universe AND type = 'CX')
 			FROM decks AS d
 			LEFT JOIN deck_cards AS dc ON dc.deck_id = d.id
-			WHERE d.user = $user
+			WHERE d.user = ${req.user.name}
 			ORDER BY d.name ASC, dc.universe_name ASC
-		""".as[(Int, String, Option[String], Option[String], Int, Int)].run.map { case rows =>
-			rows.pack(r => (r._1, r._2)).map { case data =>
-				val universes = data.collect { case (_, _, uid, uname, _, _) if uid.isDefined => (uid.get, uname.get) }
-				Decks.ListItem(data.head._1, data.head._2, universes, data.map(_._5).sum, data.map(_._6).sum)
+		""".as[Row].run.map { case rows =>
+			rows.pack(r => r.deck).map { case data =>
+				val deck = data.head.deck
+				val universes = data.collect { case Row(_, universe, _) if universe.isDefined => universe.get }
+				Decks.ListRow(deck.id, deck.name, universes, data.map(_.count.ncx).sum, data.map(_.count.cx).sum)
 			}
-		}.map {
-			case decks => Ok(views.html.decks(decks, newDeckForm))
+		}.map { decks =>
+			val form = req.flash.get("new_deck_err").map(err => newDeckForm.withError("name", err)).getOrElse(newDeckForm)
+			Ok(views.html.decks(decks, form))
 		}
 	}
 
@@ -50,9 +64,17 @@ class DecksController @Inject()(val messagesApi: MessagesApi) extends Controller
 	  */
 	def create = Authenticated.async { implicit req =>
 		val form = newDeckForm.bindFromRequest
+		val redirect = Redirect(routes.DecksController.list())
 		form.fold(
-			error => Redirect(routes.DecksController.list()).flashing("new_deck_err" -> "Invalid deck name"),
-			_ => ???
+			error => redirect.flashing("new_deck_err" -> "Invalid deck name"),
+			data => {
+				sqlu"""
+					INSERT INTO decks
+					SET name = ${data.name}, user = ${req.user.name}
+				""".run.map(r => redirect).recover {
+					case e => redirect.flashing("new_deck_err" -> "An error occured while creating the deck.")
+				}
+			}
 		)
 	}
 
