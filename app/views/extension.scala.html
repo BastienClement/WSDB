@@ -1,0 +1,17 @@
+@import views.Page
+@(name: String, extensions: Iterable[Collection.UniverseExt])(implicit request: UserRequest[_])
+
+@main(s"Extensions from $name", Page.Collection) {
+    <div class="page-header">
+        <h1>@name</h1>
+    </div>
+    <ol class="breadcrumb">
+        <li><a href="@routes.CollectionController.index()">Card list</a></li>
+        <li>@name</li>
+    </ol>
+
+    @for(extension <- extensions) {
+        <h3><a href="">@extension.name</a></h3>
+        <div class="panel panel-default"></div>
+    }
+}

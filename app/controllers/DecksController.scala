@@ -50,7 +50,7 @@ class DecksController @Inject()(val messagesApi: MessagesApi) extends Controller
 			WHERE d.user = ${req.user.name}
 			ORDER BY d.name ASC, dc.universe_name ASC
 		""".as[Row].run.map { case rows =>
-			rows.pack(r => r.deck).map { case data =>
+			rows.pack(r => r.deck).map { data =>
 				val deck = data.head.deck
 				val universes = data.collect { case Row(_, universe, _) if universe.isDefined => universe.get }
 				Decks.ListRow(deck.id, deck.name, universes, data.map(_.count.ncx).sum, data.map(_.count.cx).sum)
