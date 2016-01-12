@@ -13,15 +13,17 @@ import slick.jdbc.GetResult
 
 object Decks {
 	case class ListRow(id: Int, name: String, universes: Seq[(String, String)], ncx_count: Int, cx_count: Int)
-	case class NewDeckData(name: String)
-}
 
-class DecksController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
-	val newDeckForm = Form(
+	case class NewDeckData(name: String)
+	val NewDeckForm = Form(
 		mapping(
 			"name" -> nonEmptyText(1, 32)
 		)(NewDeckData.apply)(NewDeckData.unapply)
 	)
+}
+
+class DecksController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
+	import Decks._
 
 	/**
 	  * Displays the list of decks created by the user.
@@ -54,7 +56,7 @@ class DecksController @Inject()(val messagesApi: MessagesApi) extends Controller
 				Decks.ListRow(deck.id, deck.name, universes, data.map(_.count.ncx).sum, data.map(_.count.cx).sum)
 			}
 		}.map { decks =>
-			val form = req.flash.get("new_deck_err").map(err => newDeckForm.withError("name", err)).getOrElse(newDeckForm)
+			val form = req.flash.get("new_deck_err").map(err => NewDeckForm.withError("name", err)).getOrElse(NewDeckForm)
 			Ok(views.html.decks(decks, form))
 		}
 	}
@@ -63,7 +65,7 @@ class DecksController @Inject()(val messagesApi: MessagesApi) extends Controller
 	  * Create a new deck.
 	  */
 	def create = Authenticated.async { implicit req =>
-		val form = newDeckForm.bindFromRequest
+		val form = NewDeckForm.bindFromRequest
 		val redirect = Redirect(routes.DecksController.list())
 		form.fold(
 			error => redirect.flashing("new_deck_err" -> "Invalid deck name"),

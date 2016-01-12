@@ -10,27 +10,32 @@ import play.api.mvc._
 
 object Auth {
 	case class LoginData(login: String, pass: String)
-	case class RegisterData(login: String, mail: String, pass: String)
-}
-
-class AuthController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
-	//
-	// --- Login ---
-	//
-
-	val loginForm = Form(
+	val LoginForm = Form(
 		mapping(
 			"login" -> nonEmptyText(3, 32),
 			"pass" -> nonEmptyText(6)
 		)(LoginData.apply)(LoginData.unapply)
 	)
 
+	case class RegisterData(login: String, mail: String, pass: String)
+	val RegisterForm = Form(
+		mapping(
+			"login" -> nonEmptyText(3, 32),
+			"mail" -> email,
+			"pass" -> nonEmptyText(6)
+		)(RegisterData.apply)(RegisterData.unapply)
+	)
+}
+
+class AuthController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
+	import Auth._
+
 	def login = Unauthenticated { implicit req =>
-		Ok(views.html.login(loginForm))
+		Ok(views.html.login(LoginForm))
 	}
 
 	def loginPost = Unauthenticated.async { implicit req =>
-		val form = loginForm.bindFromRequest
+		val form = LoginForm.bindFromRequest
 		form.fold(
 			error => BadRequest(views.html.login(error)),
 			data => {
@@ -48,24 +53,12 @@ class AuthController @Inject()(val messagesApi: MessagesApi) extends Controller 
 		)
 	}
 
-	//
-	// --- Register ---
-	//
-
-	val registerForm = Form(
-		mapping(
-			"login" -> nonEmptyText(3, 32),
-			"mail" -> email,
-			"pass" -> nonEmptyText(6)
-		)(RegisterData.apply)(RegisterData.unapply)
-	)
-
 	def register = Unauthenticated { implicit req =>
-		Ok(views.html.register(registerForm))
+		Ok(views.html.register(RegisterForm))
 	}
 
 	def registerPost = Unauthenticated.async { implicit req =>
-		val form = registerForm.bindFromRequest
+		val form = RegisterForm.bindFromRequest
 		form.fold(
 			error => BadRequest(views.html.register(error)),
 			data => {
@@ -85,10 +78,6 @@ class AuthController @Inject()(val messagesApi: MessagesApi) extends Controller 
 			}
 		)
 	}
-
-	//
-	// --- Logout ---
-	//
 
 	def logout = Authenticated {
 		Redirect(routes.CollectionController.index()).withNewSession

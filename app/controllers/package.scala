@@ -1,6 +1,7 @@
 import java.sql.SQLIntegrityConstraintViolationException
 import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
+import play.api.libs.iteratee.K
 import play.api.mvc.Results.{Forbidden, Redirect}
 import play.api.mvc._
 import scala.collection.mutable
@@ -58,7 +59,8 @@ package object controllers {
 	  * In contrast to .groupBy() this method preserve ordering and have a different return type.
 	  */
 	implicit class VectorPacker[T](val vector: Vector[T]) extends AnyVal {
-		def pack[K](hash: (T) => K): Vector[Vector[T]] = {
+		type Hash[K] = (T) => K
+		private def process[K](hash: Hash[K]): (Vector[K], mutable.Map[K, Vector[T]]) = {
 			var order = Vector[K]()
 			val packs = mutable.Map[K, Vector[T]]().withDefault { key =>
 				order :+= key
@@ -68,7 +70,17 @@ package object controllers {
 				val key = hash(item)
 				packs(key) :+= item
 			}
+			(order, packs)
+		}
+
+		def pack[K](hash: Hash[K]): Vector[Vector[T]] = {
+			val (order, packs) = process(hash)
 			for (key <- order) yield packs(key)
+		}
+
+		def packWithKey[K](hash: Hash[K]): Vector[(K, Vector[T])] = {
+			val (order, packs) = process(hash)
+			for (key <- order) yield (key, packs(key))
 		}
 	}
 

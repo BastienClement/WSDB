@@ -28,4 +28,8 @@ class CollectionController extends Controller {
 			Ok(views.html.index(universes.partition(u => u.weiss)))
 		}
 	}
+
+	def universe(name: String) = UserAction.async { implicit req =>
+		???
+	}
 }
