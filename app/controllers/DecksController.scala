@@ -89,10 +89,9 @@ class DecksController @Inject()(val messagesApi: MessagesApi) extends Controller
 			str_id <- form_ids.headOption
 			id <- str_id.toOptInt
 		} yield {
-			val user = req.user.name
 			sqlu"""
 				DELETE FROM decks
-				WHERE id = $id AND user = $user
+				WHERE id = $id AND user = ${req.user.name}
 				LIMIT 1
 			""".run
 		}).getOrElse(Future.successful(null)).recover { case _ => () }.map {
