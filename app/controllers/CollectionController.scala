@@ -15,7 +15,7 @@ object Collection {
 		val schwarz = !weiss
 	}
 
-	case class UniverseExt(id: String, name: String, abbreviation: String)
+	case class UniverseExt(id: Int, name: String, abbreviation: String)
 	implicit val GetUniverseExt = GetResult(r => UniverseExt(r.<<, r.<<, r.<<))
 
 	type UniversesList = (Iterable[UniverseRow], Iterable[UniverseRow])

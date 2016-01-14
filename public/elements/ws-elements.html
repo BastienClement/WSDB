@@ -7,18 +7,182 @@
 					type: String
 				},
 				params: {
-					type: Object
+					type: Object,
+					value: null
 				},
 				data: {
 					type: Object,
 					notify: true
+				},
+				wait: {
+					type: Boolean,
+					value: false
 				}
 			},
+			created: function() {
+				this.done = false;
+			},
 			attached: function() {
+				if (!this.wait) this.execute();
+			},
+			execute: function() {
+				if (this.done) return;
+				this.done = true;
 				var self = this;
 				$.get(this.url, this.params, function(data) {
 					self.data = data;
 				}, "json");
+			}
+		});
+	</script>
+</dom-module>
+
+<dom-module id="ws-img">
+	<template>
+		<style>
+			:host {
+				display: inline-block;
+				background: #999;
+			}
+			img {
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+		<img src="{{url}}">
+	</template>
+	<script>
+		Polymer({
+			is: "ws-img",
+			properties: {
+				card: {
+					type: String
+				},
+				url: {
+					type: String,
+					computed: "computeURL(card)"
+				}
+			},
+			computeURL: function(card) {
+				return "http://loki.cpfk.net/card/" + card.replace(/\/|-/g, "_").toLowerCase() + ".gif";
+			}
+		});
+	</script>
+</dom-module>
+
+<dom-module id="ws-ext-cards">
+	<template>
+		<style>
+			#cards {
+				display: flex;
+				flex-wrap: wrap;
+			}
+		</style>
+		<ws-ajax url="/api/extcards" params="{{loadParams}}" data="{{cards}}"></ws-ajax>
+		<div id="cards">
+			<template is="dom-repeat" items="{{cards}}">
+				<ws-ext-card data="{{item}}"></ws-ext-card>
+			</template>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: "ws-ext-cards",
+			properties: {
+				ext: {
+					type: Number
+				},
+				loadParams: {
+					type: Object,
+					computed: "buildLoadParams(ext)"
+				}
+			},
+			buildLoadParams: function(ext) {
+				return {id: ext};
+			},
+			load: function() {
+				console.log(this.ext);
+			}
+		});
+	</script>
+</dom-module>
+
+<dom-module id="ws-ext-card">
+	<template>
+		<style>
+			:host {
+				margin: 5px;
+				position: relative;
+				font-size: 12px;
+			}
+
+			#wrapper {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+
+			ws-img {
+				width: 97px;
+				height: 136px;
+			}
+
+			#wrapper[quantity="0"] ws-img {
+				opacity: 0.5;
+				-webkit-filter: grayscale(1);
+				-moz-filter: grayscale(1);
+				filter: grayscale(1);
+			}
+
+			.corner {
+				position: absolute;
+				top: 10px;
+				left: -20px;
+				transform: rotate(-45deg);
+				width: 80px;
+				border-bottom: 20px solid #ADFF2F;
+				border-left: 20px solid transparent;
+				border-right: 20px solid transparent;
+			}
+
+			.corner div {
+				position: absolute;
+				width: 100%;
+				font-size: 14px;
+				font-weight: 600;
+				text-align: center;
+			}
+		</style>
+		<div id="wrapper" quantity$="{{data.quantity}}">
+			<ws-img card="{{data.id}}"></ws-img>
+			<span>{{data.id}}</span>
+			<template is="dom-if" if="{{data.quantity}}">
+				<div class="corner">
+					<div>{{data.quantity}}</div>
+				</div>
+			</template>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: "ws-ext-card",
+			properties: {
+				data: {
+					type: Object
+				}
+			},
+			listeners: {
+				'click': 'clicked',
+				'contextmenu': 'clicked'
+			},
+			clicked: function(e) {
+				var change = 0;
+				switch (e.button) {
+					case 2: change = -1; break;
+					default: change = 1; break;
+				}
+				e.preventDefault();
+				this.set("data.quantity", Math.max(0, this.data.quantity + change));
 			}
 		});
 	</script>
