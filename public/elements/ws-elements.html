@@ -106,19 +106,10 @@
 				loadParams: {
 					type: Object,
 					computed: "buildLoadParams(ext)"
-				},
-				cards: {
-					type: Object,
-					observer: "initTooltip"
 				}
 			},
 			buildLoadParams: function(ext) {
 				return {id: ext};
-			},
-			initTooltip: function() {
-				this.debounce("init-tooltip", function() {
-					$('[data-toggle]', this.$.cards).tooltip();
-				}, 200);
 			},
 			load: function() {
 				console.log(this.ext);
@@ -184,22 +175,73 @@
 				color: #fff;
 			}
 
+			.action {
+				position: absolute;
+				top: 5px;
+				right: 5px;
+				border-top-right-radius: 10px;
+				border-bottom-left-radius: 10px;
+				overflow: hidden;
+				width: 30px;
+				height: 30px;
+			}
+
+			.action .rarity {
+				left: 0;
+			}
+
+			#wrapper:hover .action .rarity {
+				opacity: 0;
+				left: -30px;
+			}
+
+			.action a {
+				opacity: 0;
+				left: 30px;
+				top: 0;
+				text-decoration: none;
+			}
+
+			#wrapper:hover .action a {
+				opacity: 1;
+				left: 0;
+			}
+
+			.action .rarity, .action a {
+				position: absolute;
+				color: #fff;
+				font-size: 12px;
+				line-height: 30px;
+				width: 100%;
+				text-align: center;
+				transition: all ease-out .4s;
+			}
+
+
+
 			#wrapper[color="Yellow"] ws-img { border-color: rgba(239, 210, 10, 0.9); }
 			#wrapper[color="Yellow"] .corner { border-bottom-color: rgba(239, 210, 10, 0.9); }
-			#wrapper[color="Yellow"] .overlay { background: rgba(239, 210, 10, 0.9); }
+			#wrapper[color="Yellow"] .overlay, #wrapper[color="Yellow"] .action { background: rgba(239, 210, 10, 0.9); }
+
 			#wrapper[color="Red"] ws-img { border-color: rgba(197, 58, 28, 0.9); }
 			#wrapper[color="Red"] .corner { border-bottom-color: rgba(237, 75, 38, 0.9); }
-			#wrapper[color="Red"] .overlay { background: rgba(197, 58, 28, 0.9); }
+			#wrapper[color="Red"] .overlay, #wrapper[color="Red"] .action { background: rgba(197, 58, 28, 0.9); }
+
 			#wrapper[color="Green"] ws-img { border-color: rgba(91, 152, 67, 0.9); }
 			#wrapper[color="Green"] .corner { border-bottom-color: rgba(110, 194, 76, 0.9); }
-			#wrapper[color="Green"] .overlay { background: rgba(91, 152, 67, 0.9); }
+			#wrapper[color="Green"] .overlay, #wrapper[color="Green"] .action { background: rgba(91, 152, 67, 0.9); }
+
 			#wrapper[color="Blue"] ws-img { border-color: rgba(61, 129, 165, 0.9); }
 			#wrapper[color="Blue"] .corner { border-bottom-color: rgba(72, 157, 203, 0.9); }
-			#wrapper[color="Blue"] .overlay { background: rgba(61, 129, 165, 0.9); }
+			#wrapper[color="Blue"] .overlay, #wrapper[color="Blue"] .action { background: rgba(61, 129, 165, 0.9); }
 		</style>
 		<div id="wrapper" quantity$="{{data.quantity}}" color$="{{data.color}}">
 			<ws-img card="{{data.id}}" fade$="{{!data.quantity}}"></ws-img>
 			<div class="overlay">{{data.id}}</div>
+			<div class="action">
+				<a id="details" href="#" class="glyphicon glyphicon-search"></a>
+				<span class="rarity">{{data.rarity}}</span>
+			</div>
 			<div class="corner">
 				<div>{{data.quantity}}</div>
 			</div>
@@ -215,16 +257,21 @@
 			},
 			listeners: {
 				'click': 'clicked',
-				'contextmenu': 'clicked'
+				'contextmenu': 'clicked',
+				'details.click': 'detailsClicked'
 			},
 			clicked: function(e) {
 				var change = 0;
 				switch (e.button) {
 					case 2: change = -1; break;
-					default: change = 1; break;
+					default: change = +1; break;
 				}
 				e.preventDefault();
 				this.set("data.quantity", Math.max(0, this.data.quantity + change));
+			},
+			detailsClicked: function(e) {
+				console.log("/cards/");
+				e.stopImmediatePropagation();
 			}
 		});
 	</script>
