@@ -18,7 +18,16 @@ body {
 form button + a { margin-left: 10px; }
 .page-header { margin-top: 25px; }
 
+.navbar-default {
+	z-index: 2000;
+}
+
 .label {
 	position: relative;
 	top: -1px;
+}
+
+.tooltip.top {
+	margin-top: 5px;
+	z-index: 1000;
 }
