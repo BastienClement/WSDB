@@ -1,0 +1,22 @@
+@import views.Page
+@(name: String, deck: Vector[((String, String), Vector[Decks.DeckCard])])(implicit request: UserRequest[_])
+@main("Decks management", Page.Decks) {
+    <div class="page-header">
+        <h1>Decks @name</h1>
+    </div>
+
+    @for(((tpe, lvl), cards) <- deck) {
+        <h3>
+            @{tpe match {
+                case "Climax" => "Climax"
+                case _ => s"Level $lvl"
+            }}
+        </h3>
+        @for(card <- cards) {
+            @card.name
+        }
+    }
+
+
+
+}

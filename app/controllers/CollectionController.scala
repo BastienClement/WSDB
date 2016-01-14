@@ -55,7 +55,7 @@ class CollectionController extends Controller {
 		}
 
 		result.recover {
-			case _ => Redirect(routes.CollectionController.index());
+			case _ => Redirect(routes.CollectionController.index())
 		}
 	}
 }

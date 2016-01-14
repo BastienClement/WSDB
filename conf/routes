@@ -10,6 +10,7 @@ GET         /cards/:name         controllers.CollectionController.universe(name)
 GET         /decks               controllers.DecksController.list
 POST        /decks/delete        controllers.DecksController.delete
 POST        /decks/create        controllers.DecksController.create
+GET        /decks/view/:id       controllers.DecksController.view(id)
 
 # Auth
 GET         /login               controllers.AuthController.login

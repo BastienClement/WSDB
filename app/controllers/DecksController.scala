@@ -20,6 +20,15 @@ object Decks {
 			"name" -> nonEmptyText(1, 32)
 		)(NewDeckData.apply)(NewDeckData.unapply)
 	)
+
+	case class DeckCard(deckId: Int, quantity: Int, id: String, version: String, identifier: String, name: String,
+	                    cardType: String, level: String
+								)
+	implicit val GetDeckContent = GetResult(r => DeckCard(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
+
+	case class SortedDeck(levels3: Iterable[DeckCard], levels2: Iterable[DeckCard], levels1: Iterable[DeckCard],
+	                      levels0: Iterable[DeckCard], climaxes: Iterable[DeckCard])
+
 }
 
 class DecksController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
@@ -96,6 +105,36 @@ class DecksController @Inject()(val messagesApi: MessagesApi) extends Controller
 			""".run
 		}).getOrElse(Future.successful(null)).recover { case _ => () }.map {
 			_ => Redirect(routes.DecksController.list())
+		}
+	}
+
+	def view(id: String) = Authenticated.async { implicit req =>
+		val user = req.user.name
+		val deckId = id.toInt
+
+		val deckName = sql"SELECT name FROM decks WHERE id = $deckId".as[String].head.run
+		val deckContent = sql"""
+	      SELECT dc.deck, dc.quantity, c.id, c.version, c.identifier, c.card, c.type, c.level
+	      FROM deck_contents AS dc
+	      INNER JOIN decks AS d
+	      ON d.id = dc.deck
+	      INNER JOIN complete_cards AS c
+	      ON c.id = dc.card AND c.version = dc.version
+	      WHERE dc.deck = $deckId
+		   ORDER BY c.level DESC, c.type ASC
+		""".as[DeckCard].run
+
+		val result = for {
+			dckName <- deckName
+			dckContent <- deckContent
+		} yield {
+			val cards = dckContent.packWithKey(c => (c.cardType, c.level))
+
+			Ok(views.html.deckContent(dckName, cards))
+		}
+
+		result.recover {
+			case e => println(e); Redirect(routes.DecksController.list())
 		}
 	}
 }
