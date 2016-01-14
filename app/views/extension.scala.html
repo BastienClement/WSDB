@@ -7,13 +7,27 @@
 	</div>
 	<ol class="breadcrumb">
 		<li><a href="@routes.CollectionController.index()">Card list</a></li>
-		<li>@name</li>
+		<li class="active">@name</li>
 	</ol>
-
-	@for( extension <- extensions) {
-		<h3><a href="">@extension.name</a></h3>
-		<div class="panel panel-default">
-			<ws-ext-cards ext="@extension.id"></ws-ext-cards>
+	<div class="row">
+		<div class="col-md-3">
+			<div class="nav nav-stacked nav-pills">
+				@for( extension <- extensions) {
+					<a class="list-group-item" href="#ext-@extension.id">@extension.name</a>
+				}
+			</div>
+			<div class="panel panel-primary" style="margin-top: 15px;">
+				<div class="panel-heading">Filters</div>
+				<div class="panel-body">
+					...
+				</div>
+			</div>
 		</div>
-	}
+		<div class="col-md-9">
+			@for( extension <- extensions) {
+				<h3 id="ext-@extension.id" style="padding-top: 70px; margin-top: -60px;"><a>@extension.name</a></h3>
+				<ws-ext-cards ext="@extension.id"></ws-ext-cards>
+			}
+		</div>
+	</div>
 }

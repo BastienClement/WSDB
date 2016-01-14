@@ -81,18 +81,19 @@
 			#cards {
 				display: flex;
 				flex-wrap: wrap;
-				padding: 6px;
+				padding: 6px 0;
 			}
 
 			:host {
 				display: flex;
 				justify-content: center;
+				margin-right: -10px;
 			}
 		</style>
 		<ws-ajax url="/api/extcards" params="{{loadParams}}" data="{{cards}}"></ws-ajax>
 		<div id="cards">
 			<template is="dom-repeat" items="{{cards}}">
-				<ws-ext-card data="{{item}}" data-toggle="tooltip" data-placement="top" title$="{{item.name}}"></ws-ext-card>
+				<ws-ext-card data="{{item}}" title$="{{item.name}}"></ws-ext-card>
 			</template>
 		</div>
 	</template>
@@ -122,7 +123,7 @@
 	<template>
 		<style>
 			:host {
-				padding: 5px;
+				padding: 5px 10px 5px 0;
 				position: relative;
 				font-size: 12px;
 				overflow: hidden;
@@ -130,16 +131,16 @@
 			}
 
 			ws-img {
-				width: 115px;
-				height: 160px;
+				width: 112px;
+				height: 155px;
 				transition: all ease-out .25s;
 				border: 2px solid;
 			}
 
 			.corner {
 				position: absolute;
-				top: 15px;
-				left: -15px;
+				top: 17px;
+				left: -19px;
 				transform: rotate(-45deg);
 				width: 80px;
 				border-bottom: 20px solid #ADFF2F;
@@ -165,8 +166,8 @@
 			.overlay {
 				position: absolute;
 				bottom: 5px;
-				left: 5px;
-				right: 5px;
+				left: 0;
+				right: 10px;
 				text-align: center;
 				padding: 2px;
 				border-bottom-left-radius: 10px;
@@ -178,7 +179,7 @@
 			.action {
 				position: absolute;
 				top: 5px;
-				right: 5px;
+				right: 10px;
 				border-top-right-radius: 10px;
 				border-bottom-left-radius: 10px;
 				overflow: hidden;
@@ -217,22 +218,20 @@
 				transition: all ease-out .4s;
 			}
 
-
-
 			#wrapper[color="Yellow"] ws-img { border-color: rgba(239, 210, 10, 0.9); }
-			#wrapper[color="Yellow"] .corner { border-bottom-color: rgba(239, 210, 10, 0.9); }
+			#wrapper[color="Yellow"] .corner { border-bottom-color: rgba(239, 210, 10, 1); }
 			#wrapper[color="Yellow"] .overlay, #wrapper[color="Yellow"] .action { background: rgba(239, 210, 10, 0.9); }
 
 			#wrapper[color="Red"] ws-img { border-color: rgba(197, 58, 28, 0.9); }
-			#wrapper[color="Red"] .corner { border-bottom-color: rgba(237, 75, 38, 0.9); }
+			#wrapper[color="Red"] .corner { border-bottom-color: rgba(237, 75, 38, 1); }
 			#wrapper[color="Red"] .overlay, #wrapper[color="Red"] .action { background: rgba(197, 58, 28, 0.9); }
 
 			#wrapper[color="Green"] ws-img { border-color: rgba(91, 152, 67, 0.9); }
-			#wrapper[color="Green"] .corner { border-bottom-color: rgba(110, 194, 76, 0.9); }
+			#wrapper[color="Green"] .corner { border-bottom-color: rgba(110, 194, 76, 1); }
 			#wrapper[color="Green"] .overlay, #wrapper[color="Green"] .action { background: rgba(91, 152, 67, 0.9); }
 
 			#wrapper[color="Blue"] ws-img { border-color: rgba(61, 129, 165, 0.9); }
-			#wrapper[color="Blue"] .corner { border-bottom-color: rgba(72, 157, 203, 0.9); }
+			#wrapper[color="Blue"] .corner { border-bottom-color: rgba(72, 157, 203, 1); }
 			#wrapper[color="Blue"] .overlay, #wrapper[color="Blue"] .action { background: rgba(61, 129, 165, 0.9); }
 		</style>
 		<div id="wrapper" quantity$="{{data.quantity}}" color$="{{data.color}}">
