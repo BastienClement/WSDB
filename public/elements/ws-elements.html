@@ -1,0 +1,25 @@
+<dom-module id="ws-ajax">
+	<script>
+		Polymer({
+			is: "ws-ajax",
+			properties: {
+				url: {
+					type: String
+				},
+				params: {
+					type: Object
+				},
+				data: {
+					type: Object,
+					notify: true
+				}
+			},
+			attached: function() {
+				var self = this;
+				$.get(this.url, this.params, function(data) {
+					self.data = data;
+				}, "json");
+			}
+		});
+	</script>
+</dom-module>
