@@ -113,7 +113,7 @@ class DecksController @Inject()(val messagesApi: MessagesApi) extends Controller
 
 		val deckName = sql"SELECT name FROM decks WHERE id = $id".as[String].head.run
 		val deckContent = sql"""
-	      SELECT dc.deck, dc.quantity, c.id, c.version, c.identifier, c.card, c.type, c.level
+	      SELECT dc.deck, dc.quantity, c.id, c.version, c.identifier, c.name, c.type, c.level
 	      FROM deck_contents AS dc
 	      INNER JOIN decks AS d
 	      ON d.id = dc.deck
