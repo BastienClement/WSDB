@@ -1,4 +1,5 @@
 import java.sql.SQLIntegrityConstraintViolationException
+import org.apache.commons.lang3.exception.ExceptionUtils
 import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc.Results._
@@ -99,7 +100,17 @@ package object controllers {
 		}
 
 		override def invokeBlock[A](request: Request[A], block: (UserRequest[A]) => Future[Result]) = {
-			transform(request).flatMap(implicit req => block(req).recover { case e => BadRequest(views.html.error(e)) })
+			transform(request).flatMap { implicit req =>
+				block(req).recover { case error =>
+					val title = "Fatal Exception"
+					val msg = error match {
+						case e: NoSuchElementException => "The element you requested does not exist in the database."
+						case _ => error.getMessage
+					}
+					val trace = ExceptionUtils.getStackFrames(error).mkString("\n")
+					BadRequest(views.html.error(title, msg, trace))
+				}
+			}
 		}
 	}
 

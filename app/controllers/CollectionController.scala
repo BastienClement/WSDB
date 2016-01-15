@@ -47,15 +47,11 @@ class CollectionController extends Controller {
 			ORDER BY e.abbreviation
 		""".as[UniverseExt].run
 
-		val result = for {
+		for {
 			n <- name
 			exts <- extensions
 		} yield {
 			Ok(views.html.extension(n, exts))
-		}
-
-		result.recover {
-			case _ => Redirect(routes.CollectionController.index())
 		}
 	}
 }
