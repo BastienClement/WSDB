@@ -3,25 +3,25 @@
 # ~~~~
 
 # Pages
-GET         /                    controllers.CollectionController.index
-GET         /cards/:name         controllers.CollectionController.universe(name)
+GET         /                      controllers.CollectionController.index
+GET         /cards/:name           controllers.CollectionController.universe(name)
 
 # Decks
-GET         /decks               controllers.DecksController.list
-POST        /decks/delete        controllers.DecksController.delete
-POST        /decks/create        controllers.DecksController.create
-GET        /decks/view/:id       controllers.DecksController.view(id)
+GET         /decks                 controllers.DecksController.list
+POST        /decks/delete          controllers.DecksController.delete
+POST        /decks/create          controllers.DecksController.create
+GET         /decks/view/:id        controllers.DecksController.view(id: Int)
 
 # Auth
-GET         /login               controllers.AuthController.login
-POST        /login               controllers.AuthController.loginPost
-GET         /register            controllers.AuthController.register
-POST        /register            controllers.AuthController.registerPost
-GET         /logout              controllers.AuthController.logout
+GET         /login                 controllers.AuthController.login
+POST        /login                 controllers.AuthController.loginPost
+GET         /register              controllers.AuthController.register
+POST        /register              controllers.AuthController.registerPost
+GET         /logout                controllers.AuthController.logout
 
 # Json API
-GET         /api/extcards        controllers.ApiController.extcards
+GET         /api/extcards          controllers.ApiController.extcards
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file        controllers.Assets.at(path="/public", file)
+GET         /assets/*file          controllers.Assets.at(path="/public", file)
 

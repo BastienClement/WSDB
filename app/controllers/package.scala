@@ -1,8 +1,7 @@
 import java.sql.SQLIntegrityConstraintViolationException
 import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
-import play.api.libs.iteratee.K
-import play.api.mvc.Results.{Forbidden, Redirect}
+import play.api.mvc.Results._
 import play.api.mvc._
 import scala.collection.mutable
 import scala.concurrent.Future
@@ -91,12 +90,16 @@ package object controllers {
 	class UserRequest[A](val user: User, val authenticated: Boolean, request: Request[A]) extends WrappedRequest[A](request)
 
 	/** Authenticated action */
-	object UserAction extends ActionBuilder[UserRequest] with ActionTransformer[Request, UserRequest] {
+	object UserAction extends ActionBuilder[UserRequest] {
 		def transform[A](request: Request[A]) = request.session.get("login") match {
 			case Some(login) =>
 				val query = sql"SELECT UCWORDS(login), email FROM users WHERE active = 1 AND login = $login".as[(String, String)]
 				query.head.map(User.tupled).run.map(user => new UserRequest(user, true, request))
 			case None => Future.successful(new UserRequest(null, false, request))
+		}
+
+		override def invokeBlock[A](request: Request[A], block: (UserRequest[A]) => Future[Result]) = {
+			transform(request).flatMap(implicit req => block(req).recover { case e => BadRequest(views.html.error(e)) })
 		}
 	}
 
