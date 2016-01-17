@@ -1,5 +1,5 @@
 @import views.Page
-@(title: String, page: Page.Value)(content: Html)(implicit request: UserRequest[_])
+@(title: String, page: Page.Value, noContainer: Boolean = false)(content: Html)(implicit request: UserRequest[_])
 <!DOCTYPE html>
 <html>
 	<head>
@@ -41,8 +41,8 @@
 								<li><a href="/account">Account</a></li>
 								<li><a href="/logout">Logout</a></li>
 							} else {
-								<li><a href="@routes.AuthController.login()">Login</a></li>
-								<li><a href="@routes.AuthController.register()">Register</a></li>
+								<li><a href="@routes.Auth.login()">Login</a></li>
+								<li><a href="@routes.Auth.register()">Register</a></li>
 							}
 						</ul>
 					</div>
@@ -50,9 +50,9 @@
 			</div>
 		</nav>
 		<div class="wrapper">
-			<div class="container">
+			@if(!noContainer) { <div class="container"> }
 				@content
-			</div>
+			@if(!noContainer) { </div> }
 		</div>
 	</body>
 </html>

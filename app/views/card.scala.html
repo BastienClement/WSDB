@@ -1,0 +1,17 @@
+@import views.Utils
+@(card: CompleteCard, quantity: Int = 0)
+<div data-id="@card.identifier" class="card" quantity="@quantity" color="@card.color" title="@card.name">
+	<div class="card-img">
+		<img src="@Utils.cardImageURL(card.identifier)">
+	</div>
+	<div class="card-label">
+		@card.identifier
+	</div>
+	<div class="card-corner">
+		<a id="card-corner-details" href="#" class="glyphicon glyphicon-search"></a>
+		<span class="card-corner-text">@card.rarity</span>
+	</div>
+	<div class="card-strip">
+		<div>@quantity</div>
+	</div>
+</div>

@@ -1,20 +1,21 @@
 @import views.Page
-@(name: String, extensions: Iterable[Collection.UniverseExt])(implicit request: UserRequest[_])
+@import models.CompleteCard
+@(name: String, extensions: Iterable[Iterable[(CompleteCard, Int)]])(implicit request: UserRequest[_])
 
 @main(s"Extensions from $name", Page.Collection) {
 	<div class="page-header">
-		<h1>@name</h1>
+		<h2><span style="color: #999;">Universe:</span> @name</h2>
 	</div>
 	<ol class="breadcrumb">
-		<li><a href="@routes.CollectionController.index()">Card list</a></li>
+		<li><a href="@routes.Collection.index()">Universes</a></li>
 		<li class="active">@name</li>
 	</ol>
 	<div class="row">
 		<div class="col-md-3">
 			<div class="nav nav-stacked nav-pills">
-				@for( extension <- extensions) {
-					<a class="list-group-item" href="#ext-@extension.id">@extension.name</a>
-				}
+			@for(cards <- extensions; (first, _) = cards.head) {
+				<a class="list-group-item" href="#ext-@first.extension_id">@first.extension</a>
+			}
 			</div>
 			<div class="panel panel-primary" style="margin-top: 15px;">
 				<div class="panel-heading">Filters</div>
@@ -24,10 +25,12 @@
 			</div>
 		</div>
 		<div class="col-md-9">
-			@for( extension <- extensions) {
-				<h3 id="ext-@extension.id" style="padding-top: 70px; margin-top: -60px;"><a>@extension.name</a></h3>
-				<ws-ext-cards ext="@extension.id"></ws-ext-cards>
-			}
+		@for(cards <- extensions; (first, _) = cards.head) {
+			<h3 id="ext-@first.extension_id" style="padding-top: 70px; margin-top: -60px;">
+				@first.extension
+			</h3>
+			@cards_list(cards)
+		}
 		</div>
 	</div>
 }

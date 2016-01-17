@@ -2,26 +2,23 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Pages
-GET         /                      controllers.CollectionController.index
-GET         /cards/:name           controllers.CollectionController.universe(name)
+# Collection
+GET         /                      controllers.Collection.index
+GET         /cards/:name           controllers.Collection.universe(name)
 
 # Decks
-GET         /decks                 controllers.DecksController.list
-POST        /decks/delete          controllers.DecksController.delete
-POST        /decks/create          controllers.DecksController.create
-GET         /decks/view/:id        controllers.DecksController.view(id: Int)
+GET         /decks                 controllers.Decks.list
+POST        /decks/delete          controllers.Decks.delete
+POST        /decks/create          controllers.Decks.create
+GET         /decks/view/:id        controllers.Decks.view(id: Int)
 
 # Auth
-GET         /login                 controllers.AuthController.login
-POST        /login                 controllers.AuthController.loginPost
-GET         /register              controllers.AuthController.register
-POST        /register              controllers.AuthController.registerPost
-GET         /logout                controllers.AuthController.logout
-
-# Json API
-GET         /api/extcards          controllers.ApiController.extcards
+GET         /login                 controllers.Auth.login
+POST        /login                 controllers.Auth.loginPost
+GET         /register              controllers.Auth.register
+POST        /register              controllers.Auth.registerPost
+GET         /logout                controllers.Auth.logout
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file          controllers.Assets.at(path="/public", file)
-GET         /*path                 controllers.ErrorController.fourOhFour(path)
+GET         /*path                 controllers.Error.fourOhFour(path)

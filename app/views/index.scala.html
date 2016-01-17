@@ -1,7 +1,8 @@
 @import views.Page
-@(universes: Collection.UniversesList)(implicit request: UserRequest[_])
+@import models.Query.UniverseListRow
+@(universes: (Iterable[UniverseListRow], Iterable[UniverseListRow]))(implicit request: UserRequest[_])
 
-@universesList(universes: Iterable[Collection.UniverseRow]) = {
+@universesList(rows: Iterable[UniverseListRow]) = {
 	<table class="table table-condensed">
 		<thead>
 			<tr>
@@ -11,12 +12,12 @@
 			</tr>
 		</thead>
 		<tbody>
-		@for(universe <- universes) {
+		@for(row <- rows) {
 			<tr>
-				<td><span class="label label-aspect @universe.aspect">@universe.aspect</span></td>
-				<td><a href="/cards/@universe.id">@universe.name</a></td>
-				<td class="text-right">@universe.extensions</td>
-				<td class="text-right">@universe.cards</td>
+				<td><span class="label label-aspect @row.universe.aspect">@row.universe.aspect</span></td>
+				<td><a href="/cards/@row.universe.id">@row.universe.name</a></td>
+				<td class="text-right">@row.extensions</td>
+				<td class="text-right">@row.cards</td>
 			</tr>
 		}
 		</tbody>
@@ -25,7 +26,7 @@
 
 @main("Card collection", Page.Collection) {
 	<div class="page-header">
-		<h1>Collection</h1>
+		<h2>Collection</h2>
 	</div>
 	<div class="row">
 		<div class="col-md-6">

@@ -13,6 +13,139 @@ body {
 .label-aspect.W { color: #333; background: #eee; }
 .label-aspect.S { color: #eee; background: #333; }
 
+.cards-list {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 6px 0;
+	margin-right: -10px;
+}
+
+.card {
+	padding: 5px 10px 5px 0;
+	position: relative;
+	font-size: 12px;
+	overflow: hidden;
+	line-height: 0;
+}
+
+.card .card-img {
+	border: 2px solid;
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+.card img {
+	width: 112px;
+	height: 155px;
+	border-radius: 8px;
+	transition: opacity ease-out .2s;
+}
+
+.card-strip {
+	position: absolute;
+	top: 17px;
+	left: -19px;
+	transform: rotate(-45deg);
+	width: 80px;
+	border-bottom: 20px solid #ADFF2F;
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+	line-height: 1.5em;
+	color: #fff;
+}
+
+.card[quantity="0"] .card-strip {
+	opacity: 0;
+	transform: scale(1.4) rotate(-45deg);
+}
+
+.card[quantity="0"] img {
+	opacity: 0.5;
+}
+
+.card:hover img {
+	opacity: 1;
+}
+
+.card-strip div {
+	position: absolute;
+	width: 100%;
+	font-size: 14px;
+	font-weight: 600;
+	text-align: center;
+}
+
+.card-label {
+	position: absolute;
+	bottom: 5px;
+	left: 0;
+	right: 10px;
+	text-align: center;
+	padding: 2px;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	line-height: 1.5em;
+	color: #fff;
+}
+
+.card-corner {
+	position: absolute;
+	top: 5px;
+	right: 10px;
+	border-top-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+	overflow: hidden;
+	width: 30px;
+	height: 30px;
+}
+
+.card-corner-text {
+	left: 0;
+}
+
+.card:hover .card-corner-text {
+	opacity: 0;
+	left: -30px;
+}
+
+.card-corner a {
+	opacity: 0;
+	left: 30px;
+	top: 0;
+	text-decoration: none;
+}
+
+.card:hover .card-corner a {
+	opacity: 1;
+	left: 0;
+}
+
+.card-corner-text, .card-corner a {
+	position: absolute;
+	color: #fff;
+	font-size: 12px;
+	line-height: 30px;
+	width: 100%;
+	text-align: center;
+	transition: all ease-out .3s;
+}
+
+.card[color="Yellow"] .card-img { border-color: rgba(239, 210, 10, 0.9); }
+.card[color="Yellow"] .card-strip { border-bottom-color: rgba(239, 210, 10, 1); }
+.card[color="Yellow"] .card-label, .card[color="Yellow"] .card-corner { background: rgba(239, 210, 10, 0.9); }
+
+.card[color="Red"] .card-img { border-color: rgba(197, 58, 28, 0.9); }
+.card[color="Red"] .card-strip { border-bottom-color: rgba(237, 75, 38, 1); }
+.card[color="Red"] .card-label, .card[color="Red"] .card-corner { background: rgba(197, 58, 28, 0.9); }
+
+.card[color="Green"] .card-img { border-color: rgba(91, 152, 67, 0.9); }
+.card[color="Green"] .card-strip { border-bottom-color: rgba(110, 194, 76, 1); }
+.card[color="Green"] .card-label, .card[color="Green"] .card-corner { background: rgba(91, 152, 67, 0.9); }
+
+.card[color="Blue"] .card-img { border-color: rgba(61, 129, 165, 0.9); }
+.card[color="Blue"] .card-strip { border-bottom-color: rgba(72, 157, 203, 1); }
+.card[color="Blue"] .card-label, .card[color="Blue"] .card-corner { background: rgba(61, 129, 165, 0.9); }
+
 /** Bootstrap fixes **/
 .navbar-right .btn-group.btn-group-sm { margin-top: 2px; }
 form button + a { margin-left: 10px; }

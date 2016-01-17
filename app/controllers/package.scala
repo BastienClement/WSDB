@@ -6,7 +6,7 @@ import play.api.mvc.Results._
 import play.api.mvc._
 import scala.collection.mutable
 import scala.concurrent.Future
-import scala.language.implicitConversions
+import scala.language.{higherKinds, implicitConversions}
 import slick.dbio.{DBIOAction, NoStream}
 import slick.driver.JdbcProfile
 import slick.driver.MySQLDriver.api._
@@ -58,7 +58,7 @@ package object controllers {
 	  * Used to group rows from JOIN query together.
 	  * In contrast to .groupBy() this method preserve ordering and have a different return type.
 	  */
-	implicit class VectorPacker[T](val vector: Vector[T]) extends AnyVal {
+	implicit class VectorPacker[T, S[_] <: Seq[_]](val vector: Seq[T]) extends AnyVal {
 		type Hash[K] = (T) => K
 		private def process[K](hash: Hash[K]): (Vector[K], mutable.Map[K, Vector[T]]) = {
 			var order = Vector[K]()
@@ -88,7 +88,9 @@ package object controllers {
 	case class User(name: String, mail: String)
 
 	/** A request with user information */
-	class UserRequest[A](val user: User, val authenticated: Boolean, request: Request[A]) extends WrappedRequest[A](request)
+	class UserRequest[A](val user: User, val authenticated: Boolean, request: Request[A]) extends WrappedRequest[A](request) {
+		lazy val optUser = if (authenticated) Some(user) else None
+	}
 
 	/** Authenticated action */
 	object UserAction extends ActionBuilder[UserRequest] {
@@ -125,7 +127,7 @@ package object controllers {
 	/** Only allow un-authenticated users to access the action */
 	val Unauthenticated = UserAction andThen new ActionFilter[UserRequest] {
 		def filter[A](request: UserRequest[A]) = Future.successful {
-			if (request.authenticated) Some(Redirect(routes.CollectionController.index()))
+			if (request.authenticated) Some(Redirect(routes.Collection.index()))
 			else None
 		}
 	}

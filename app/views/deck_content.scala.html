@@ -1,8 +1,8 @@
 @import views.Page
-@(name: String, deck: Vector[((String, String), Vector[Decks.DeckCard])])(implicit request: UserRequest[_])
+@(name: String, deck: Vector[((String, String), Vector[(CompleteCard, Int, Int)])])(implicit request: UserRequest[_])
 @main("Decks management", Page.Decks) {
     <div class="page-header">
-        <h1>Decks @name</h1>
+        <h2><span style="color: #999;">Deck:</span> @name</h2>
     </div>
 
     @for(((tpe, lvl), cards) <- deck) {
@@ -12,11 +12,8 @@
                 case _ => s"Level $lvl"
             }}
         </h3>
-        @for(card <- cards) {
+        @for((card, col_q, deck_q) <- cards) {
             @card.name
         }
     }
-
-
-
 }
