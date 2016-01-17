@@ -1,21 +1,9 @@
 package controllers
 
 import com.google.inject.Inject
-import controllers.Forms.NewDeck
 import models.{CompleteCards, Query}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Controller
-import slick.jdbc.GetResult
-
-object Decks_ {
-	case class ListRow(id: Int, name: String, universes: Seq[(String, String)], ncx_count: Int, cx_count: Int)
-
-	case class DeckCard(deckId: Int, quantity: Int, id: String, version: String, identifier: String, name: String,
-	                    cardType: String, level: String
-	                   )
-	implicit val GetDeckContent = GetResult(r => DeckCard(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
-
-}
 
 class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
 	/**
@@ -23,7 +11,9 @@ class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18n
 	  */
 	def list = Authenticated.async { implicit req =>
 		Query.deckList(req.user.name).map { decks =>
-			val form = req.flash.get("new_deck_err").map(err => NewDeck.withError("name", err)).getOrElse(NewDeck)
+			val form = req.flash.get("new_deck_err").map { err =>
+				Forms.NewDeck.withError("name", err)
+			}.getOrElse(Forms.NewDeck)
 			Ok(views.html.decks(decks, form))
 		}
 	}

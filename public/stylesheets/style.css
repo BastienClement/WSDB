@@ -35,10 +35,10 @@ body {
 }
 
 .card img {
-	width: 112px;
-	height: 155px;
+	width: 125px;
+	height: 175px;
 	border-radius: 8px;
-	transition: opacity ease-out .2s;
+	transition: all ease-out .2s;
 }
 
 .card-strip {
@@ -61,10 +61,16 @@ body {
 
 .card[quantity="0"] img {
 	opacity: 0.5;
+	-webkit-filter: grayscale(100%);
+	-moz-filter: grayscale(100%);
+	filter: grayscale(100%);
 }
 
 .card:hover img {
 	opacity: 1;
+	-webkit-filter: grayscale(0%);
+	-moz-filter: grayscale(0%);
+	-filter: grayscale(0%);
 }
 
 .card-strip div {
@@ -145,6 +151,12 @@ body {
 .card[color="Blue"] .card-img { border-color: rgba(61, 129, 165, 0.9); }
 .card[color="Blue"] .card-strip { border-bottom-color: rgba(72, 157, 203, 1); }
 .card[color="Blue"] .card-label, .card[color="Blue"] .card-corner { background: rgba(61, 129, 165, 0.9); }
+
+.nowrap {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
 
 /** Bootstrap fixes **/
 .navbar-right .btn-group.btn-group-sm { margin-top: 2px; }
