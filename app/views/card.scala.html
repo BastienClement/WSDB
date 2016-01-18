@@ -132,5 +132,23 @@
 
 		$("#btn-minus").click(handle_click(-1));
 		$("#btn-plus").click(handle_click(+1));
+
+		@if(request.deck.isDefined) {
+			var deck_qte = @request.deck.get.quantityOf(card.id, card.version);
+			var card_id = "@card.id";
+			var card_version = "@card.version";
+
+			function handle_deck(mod) {
+				return function() {
+					update_deck(card_id, card_version, mod, function() {
+						deck_qte = Math.max(0, deck_qte + mod);
+						$("#card-deck-qte").text(deck_qte);
+					});
+				};
+			}
+
+			$("#btn-deck-minus").click(handle_deck(-1));
+			$("#btn-deck-plus").click(handle_deck(+1));
+		}
 	</script>
 }

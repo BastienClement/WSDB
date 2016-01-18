@@ -23,11 +23,11 @@
 					<tr @if(current) {class="info" }>
 						<td style="color: #999 ;">#@deck.id</td>
 						<td>
-							<a href="/decks/view/@deck.id">@deck.name</a>
+							<a href="@routes.Decks.view(deck.id)">@deck.name</a>
 						</td>
 						<td>
 							@for(universe <- deck.universes) {
-								<a href="/cards/@universe._1" class="label label-default">@universe._2</a>
+								<a href="@routes.Collection.universe(universe._1)" class="label label-default">@universe._2</a>
 							}
 							@if(deck.universes.isEmpty) {
 								-

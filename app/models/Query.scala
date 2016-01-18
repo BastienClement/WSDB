@@ -147,6 +147,12 @@ object Query {
 		}
 	}
 
+	def updateDeck(deck: Int, card: String, version: String, mod: Int) = sqlu"""
+		INSERT INTO deck_contents (deck, card, version, quantity)
+		VALUES ($deck, $card, $version, GREATEST(0, $mod))
+      ON DUPLICATE KEY UPDATE quantity = GREATEST(0, quantity + $mod)
+	""".run
+
 	// ---------------------------------
 	// Auth
 	// ---------------------------------

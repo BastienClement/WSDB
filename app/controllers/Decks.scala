@@ -3,6 +3,7 @@ package controllers
 import com.google.inject.Inject
 import models.{CompleteCards, Query}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.Controller
 
 class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
@@ -88,6 +89,21 @@ class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18n
 		} yield {
 			val packed_cards = Query.packByCategory(cards) { case (cc, _, _) => cc }
 			Ok(views.html.deck_content(data, packed_cards))
+		}
+	}
+
+	/**
+	  * Update card quantity in a deck
+	  */
+	def update = Authenticated.async(parse.urlFormEncoded) { implicit req =>
+		val deck = req.deck.get
+		val card = req.body("card").head
+		val version = req.body("version").head
+		val mod = req.body("mod").head.toInt
+		Query.updateDeck(deck.id, card, version, mod).map { _ =>
+			Ok(Json.obj("success" -> true))
+		}.recover {
+			case e => Ok(Json.obj("error" -> e.getMessage))
 		}
 	}
 }

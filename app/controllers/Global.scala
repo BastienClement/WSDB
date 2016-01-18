@@ -21,7 +21,8 @@ class Global extends Controller {
 	def jsRoutes = Action { implicit req =>
 		Ok {
 			JavaScriptReverseRouter("routes")(
-				routes.javascript.Collection.update
+				routes.javascript.Collection.update,
+				routes.javascript.Decks.update
 			)
 		}
 	}

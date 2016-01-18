@@ -27,3 +27,22 @@ function update_card(dataset, mod) {
 		});
 	}, 250);
 }
+
+//
+// Deck cards update
+//
+
+function update_deck(card, version, mod, cb) {
+	$.post(routes.controllers.Decks.update().url, {
+		card: card,
+		version: version,
+		mod: mod
+	}, function(data) {
+		if (data.success) {
+			if (cb) cb();
+		} else {
+			$("#modal-error").text(data.error);
+			$("#modal").modal();
+		}
+	}, "json");
+}

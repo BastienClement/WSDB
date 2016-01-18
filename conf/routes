@@ -10,12 +10,13 @@ POST        /collection/update        controllers.Collection.update
 
 # Decks
 GET         /decks                    controllers.Decks.list
-POST        /decks/delete             controllers.Decks.delete
-POST        /decks/create             controllers.Decks.create
-POST        /decks/rename             controllers.Decks.rename
-GET         /decks/view/:id           controllers.Decks.view(id: Int)
-GET         /decks/select/:id         controllers.Decks.select(id: Int)
-GET         /decks/unselect           controllers.Decks.unselect
+POST        /deck/delete              controllers.Decks.delete
+POST        /deck/create              controllers.Decks.create
+POST        /deck/rename              controllers.Decks.rename
+GET         /deck/view/:id            controllers.Decks.view(id: Int)
+GET         /deck/select/:id          controllers.Decks.select(id: Int)
+GET         /deck/unselect            controllers.Decks.unselect
+POST        /deck/update              controllers.Decks.update
 
 # Auth
 GET         /login                    controllers.Auth.login
