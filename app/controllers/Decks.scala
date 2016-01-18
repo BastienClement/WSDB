@@ -41,7 +41,7 @@ class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18n
 			owner <- Query.deckOwner(id)
 			if owner == req.user.name
 		} yield {
-			Redirect(routes.Collection.index()).withSession(req.session + ("deck" -> id.toString))
+			Redirect(routes.Collection.index()).addingToSession("deck" -> id.toString)
 		}
 	}
 
@@ -49,7 +49,7 @@ class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18n
 	  * Unselect the previously selected deck.
 	  */
 	def unselect = Authenticated { implicit req =>
-		Redirect(req.headers("referer")).withSession(req.session - "deck")
+		Redirect(req.headers("referer")).removingFromSession("deck")
 	}
 
 	/**
@@ -96,12 +96,12 @@ class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18n
 	  * Update card quantity in a deck
 	  */
 	def update = Authenticated.async(parse.urlFormEncoded) { implicit req =>
-		val deck = req.deck.get
 		val card = req.body("card").head
 		val version = req.body("version").head
 		val mod = req.body("mod").head.toInt
-		Query.updateDeck(deck.id, card, version, mod).map { _ =>
-			Ok(Json.obj("success" -> true))
+		Query.updateDeck(req.deck_id.get, card, version, mod).map { _ =>
+			if (req.body.contains("deck")) Ok(Json.obj("success" -> views.html.components.deck().body))
+			else Ok(Json.obj("success" -> true))
 		}.recover {
 			case e => Ok(Json.obj("error" -> e.getMessage))
 		}

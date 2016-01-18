@@ -29,8 +29,7 @@ class Auth @Inject()(val messagesApi: MessagesApi) extends Controller with I18nS
 						val error_form = form.withError("global", "Login name or password is invalid")
 						Unauthorized(views.html.login(error_form))
 					case true =>
-						Redirect(routes.Collection.index())
-							.withSession(req.session + ("login" -> login))
+						Redirect(routes.Collection.index()).addingToSession("login" -> login)
 				}
 			}
 		)

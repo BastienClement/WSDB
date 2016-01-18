@@ -32,14 +32,15 @@ function update_card(dataset, mod) {
 // Deck cards update
 //
 
-function update_deck(card, version, mod, cb) {
+function update_deck(card, version, mod, cb, deck) {
 	$.post(routes.controllers.Decks.update().url, {
 		card: card,
 		version: version,
-		mod: mod
+		mod: mod,
+		deck: deck
 	}, function(data) {
 		if (data.success) {
-			if (cb) cb();
+			if (cb) cb(data.success);
 		} else {
 			$("#modal-error").text(data.error);
 			$("#modal").modal();

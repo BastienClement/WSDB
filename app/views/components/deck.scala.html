@@ -2,14 +2,16 @@
 @(static_deck: DeckData = null)(implicit request: UserRequest[_])
 @if(static_deck != null || request.deck.isDefined) {
 	@defining(if(static_deck != null) static_deck else request.deck.get) { deck =>
-		<div class="deck panel panel-info">
+		<div class="deck panel panel-info" id="sidebar-deck">
 			<div class="panel-heading"><strong>Deck:</strong> @deck.name</div>
 			<div class="panel-body small">
 			@if(deck.cards.isEmpty) {
 				This deck is currently empty.
 			} else {
-				<table>
+				<table class="deck-table">
 				@for((category, cards) <- deck.cardsByLevels) {
+					<!-- Required for sizing -->
+					<tr class="dummy"><td></td><td></td></tr>
 					<tr>
 						<th colspan="2">@category</th>
 					</tr>

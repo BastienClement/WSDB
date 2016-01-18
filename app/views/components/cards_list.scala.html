@@ -1,6 +1,7 @@
-@(cards: Iterable[(CompleteCard, Int)])
+@import models.Query.DeckData
+@(cards: Iterable[(CompleteCard, Int)], deck: DeckData = null)(implicit request: UserRequest[_])
 <div class="cards-list">
 @for((card, quantity) <- cards) {
-	@views.html.components.card(card, quantity)
+	@views.html.components.card(card, quantity, deck = deck)
 }
 </div>

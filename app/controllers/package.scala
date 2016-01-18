@@ -104,15 +104,23 @@ package object controllers {
 		extends WrappedRequest[A](request) {
 		val user = optUser.orNull
 		val authenticated = optUser.isDefined
+
+		lazy val deck_id = request.session.get("deck").map(_.toInt)
 		lazy val deck = {
-			val future_deck = request.session.get("deck").map(_.toInt) match {
+			val future_deck = deck_id match {
 				case Some(id) if optUser.isDefined =>
-					models.Query.deckData(id, user.name).map(Some(_)).recover { case e => None }
+					models.Query.deckData(id, user.name).map(Some(_)).recover { case e =>
+						deck_failed = true
+						None
+					}
 				case _ =>
 					Future.successful(None)
 			}
 			Await.result(future_deck, 1.second)
 		}
+
+		private[this] var deck_failed = false
+		def hasDeckFailed = deck_failed
 	}
 
 	/** Authenticated action */
@@ -130,22 +138,23 @@ package object controllers {
 
 		override def invokeBlock[A](request: Request[A], block: (UserRequest[A]) => Future[Result]) = {
 			transform(request).flatMap { implicit req =>
-				if (req.session.get("deck").isDefined && req.deck.isEmpty) {
-					Future.successful(TemporaryRedirect(req.uri).withSession(req.session - "deck"))
-				} else {
-					(try {
-						block(req)
-					} catch {
-						case e: Throwable => Future.failed(e)
-					}).recover { case error =>
-						val title = "Fatal Exception"
-						val msg = error match {
-							case e: NoSuchElementException => "The element you requested does not exist in the database."
-							case _ => error.getMessage
-						}
-						val trace = ExceptionUtils.getStackFrames(error).mkString("\n")
-						BadRequest(views.html.error(title, msg, trace))
+				(try {
+					for {
+						res <- block(req)
+					} yield {
+						if (req.hasDeckFailed) res.removingFromSession("deck")
+						else res
 					}
+				} catch {
+					case e: Throwable => Future.failed(e)
+				}).recover { case error =>
+					val title = "Fatal Exception"
+					val msg = error match {
+						case e: NoSuchElementException => "The element you requested does not exist in the database."
+						case _ => error.getMessage
+					}
+					val trace = ExceptionUtils.getStackFrames(error).mkString("\n")
+					BadRequest(views.html.error(title, msg, trace))
 				}
 			}
 		}

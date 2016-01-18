@@ -1,5 +1,6 @@
 @import views.Utils
-@(card: CompleteCard, quantity: Int = 0, big: Boolean = false)
+@import models.Query.DeckData
+@(card: CompleteCard, quantity: Int = 0, big: Boolean = false, deck: DeckData = null)(implicit request: UserRequest[_])
 <div class="card" @if(!big) { quantity="@quantity" } else { big="1" } color="@card.color" title="@card.name"
 		data-id="@card.identifier" data-card="@card.id" data-version="@card.version">
 	<div class="card-img">
@@ -15,4 +16,11 @@
 	<div class="card-strip">
 		<div>@quantity</div>
 	</div>
+	@if(deck != null) {
+		@defining(deck.quantityOf(card.id, card.version)) { qte =>
+			<div class="card-deckqte" data-qte="@qte">
+				<div class="label label-primary">@qte</div>
+			</div>
+		}
+	}
 </div>

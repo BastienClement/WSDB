@@ -23,7 +23,7 @@
 		<div class="col-md-9">
 		@for((category, cards) <- cards_list) {
 			<h3>@category</h3>
-			@views.html.components.cards_list(cards.map { case (c, cq, dq) => (c, dq) })
+			@views.html.components.cards_list(cards.map { case (c, cq, dq) => (c, cq) }, deck)
 		}
 		@if(cards_list.isEmpty) {
 			<div class="alert alert-warning">
