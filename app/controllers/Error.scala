@@ -11,6 +11,6 @@ class Error extends Controller {
 	  * Error 404
 	  */
 	def fourOhFour(path: String) = UserAction { implicit req =>
-		NotFound(views.html.error("Error 404", "Page not found", s"${req.method} /$path"))
+		NotFound(views.html.error("Page not found", "The page you requested does not exist.", s"${req.method} /$path"))
 	}
 }

@@ -3,22 +3,25 @@
 # ~~~~
 
 # Collection
-GET         /                      controllers.Collection.index
-GET         /cards/:name           controllers.Collection.universe(name)
+GET         /                        controllers.Collection.index
+GET         /cards/:name             controllers.Collection.universe(name)
 
 # Decks
-GET         /decks                 controllers.Decks.list
-POST        /decks/delete          controllers.Decks.delete
-POST        /decks/create          controllers.Decks.create
-GET         /decks/view/:id        controllers.Decks.view(id: Int)
+GET         /decks                   controllers.Decks.list
+POST        /decks/delete            controllers.Decks.delete
+POST        /decks/create            controllers.Decks.create
+POST        /decks/rename            controllers.Decks.rename
+GET         /decks/view/:id          controllers.Decks.view(id: Int)
+GET         /decks/select/:id        controllers.Decks.select(id: Int)
+GET         /decks/unselect          controllers.Decks.unselect
 
 # Auth
-GET         /login                 controllers.Auth.login
-POST        /login                 controllers.Auth.loginPost
-GET         /register              controllers.Auth.register
-POST        /register              controllers.Auth.registerPost
-GET         /logout                controllers.Auth.logout
+GET         /login                   controllers.Auth.login
+POST        /login                   controllers.Auth.loginPost
+GET         /register                controllers.Auth.register
+POST        /register                controllers.Auth.registerPost
+GET         /logout                  controllers.Auth.logout
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file          controllers.Assets.at(path="/public", file)
-GET         /*path                 controllers.Error.fourOhFour(path)
+GET         /assets/*file            controllers.Assets.at(path="/public", file)
+GET         /*path                   controllers.Error.fourOhFour(path)

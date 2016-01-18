@@ -1,5 +1,5 @@
 @import views.Page
-@(title: String, page: Page.Value, noContainer: Boolean = false)(content: Html)(implicit request: UserRequest[_])
+@(title: String, page: Page.Value)(content: Html)(implicit request: UserRequest[_])
 <!DOCTYPE html>
 <html>
 	<head>
@@ -17,18 +17,18 @@
 			<div class="container">
 				<a class="navbar-brand" href="/">WS Deck Builder</a>
 				<ul class="nav navbar-nav">
-					<li @if(page == Page.Collection) { class="active" }><a href="/">Collection</a></li>
+					<li @if(page == Page.Collection) { class="active" }><a href="@routes.Collection.index()">Collection</a></li>
 					@if(request.authenticated) {
-						<li @if(page == Page.Decks) {class="active" }><a href="/decks">Decks</a></li>
+						<li @if(page == Page.Decks) {class="active" }><a href="@routes.Decks.list()">Decks</a></li>
 					}
 				</ul>
 				<div class="navbar-right">
 					<div class="btn-group btn-group-sm" style="left: -16px">
-						<a @if(request.authenticated) { href="/account" } else { href="/login" }
+						<a @if(request.authenticated) { href="/account" } else { href="@routes.Auth.login()" }
 							class="btn btn-default navbar-btn">
 							@if(request.authenticated) {
 								<span class="glyphicon glyphicon-user"></span>
-								@request.user.name
+								@request.user.name.capitalize
 							} else {
 								Login
 							}
@@ -39,7 +39,7 @@
 						<ul class="dropdown-menu" style="border-top-left-radius: 0; border-top-right-radius: ">
 							@if(request.authenticated) {
 								<li><a href="/account">Account</a></li>
-								<li><a href="/logout">Logout</a></li>
+								<li><a href="@routes.Auth.logout()">Logout</a></li>
 							} else {
 								<li><a href="@routes.Auth.login()">Login</a></li>
 								<li><a href="@routes.Auth.register()">Register</a></li>
@@ -50,9 +50,9 @@
 			</div>
 		</nav>
 		<div class="wrapper">
-			@if(!noContainer) { <div class="container"> }
+			<div class="container">
 				@content
-			@if(!noContainer) { </div> }
+			</div>
 		</div>
 	</body>
 </html>

@@ -105,7 +105,6 @@ object CompleteCards extends TableQuery(new CompleteCards(_)) {
 			(card.level.desc, card.tpe.asc)
 		}
 
-		println(full_query.result.statements)
 		full_query.result.run
 	}
 }

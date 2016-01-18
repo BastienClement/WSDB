@@ -33,6 +33,39 @@ class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18n
 	}
 
 	/**
+	  * Select a deck for editing.
+	  */
+	def select(id: Int) = Authenticated.async { implicit req =>
+		for {
+			owner <- Query.deckOwner(id)
+			if owner == req.user.name
+		} yield {
+			Redirect(routes.Decks.list()).withSession(req.session + ("deck" -> id.toString))
+		}
+	}
+
+	/**
+	  * Unselect the previously selected deck.
+	  */
+	def unselect = Authenticated { implicit req =>
+		Redirect(routes.Decks.list()).withSession(req.session - "deck")
+	}
+
+	/**
+	  * Rename a deck.
+	  */
+	def rename = Authenticated.async { implicit req =>
+		val form = Forms.NewDeck.bindFromRequest
+		val redirect = Redirect(routes.Decks.list())
+		form.fold(
+			error => redirect.flashing("new_deck_err" -> "Invalid deck name"),
+			{ case Forms.NewDeckData(name) =>
+				Query.renameDeck(req.deck.get.id, name, req.user.name).map(_ => redirect)
+			}
+		)
+	}
+
+	/**
 	  * Invoked when deleting a deck.
 	  */
 	def delete = Authenticated.async(parse.urlFormEncoded) { implicit req =>
@@ -45,6 +78,9 @@ class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18n
 		}
 	}
 
+	/**
+	  * Display cards from a deck.
+	  */
 	def view(id: Int) = Authenticated.async { implicit req =>
 		for {
 			name <- Query.deckName(id)

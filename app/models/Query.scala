@@ -86,6 +86,15 @@ object Query {
 		SELECT name FROM decks WHERE id = $id
 	""".as[String].head.run
 
+	def deckOwner(id: Int) = sql"""
+		SELECT user FROM decks WHERE id = $id
+	""".as[String].head.run
+
+	def renameDeck(id: Int, name: String, user: String) = sqlu"""
+		UPDATE decks SET name = $name
+		WHERE id = $id AND user = $user
+	""".run
+
 	// ---------------------------------
 	// Auth
 	// ---------------------------------
@@ -100,4 +109,8 @@ object Query {
 		INSERT INTO users
 		SET login = LOWER($login), email = $mail, password = HASHPASS($login, $pass)
 	""".run
+
+	def user(login: String) = sql"""
+		SELECT login, email FROM users WHERE active = 1 AND login = $login
+	""".as[(String, String)].headOption.run
 }
