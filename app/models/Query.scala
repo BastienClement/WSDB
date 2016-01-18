@@ -37,6 +37,12 @@ object Query {
 		SELECT name FROM universes WHERE id = $id
 	""".as[String].head.run
 
+	def updateCollection(user: String, card: String, version: String, mod: Int) = sqlu"""
+		INSERT INTO collections (user, card, version, quantity)
+		VALUES ($user, $card, $version, GREATEST(0, $mod))
+      ON DUPLICATE KEY UPDATE quantity = GREATEST(0, quantity + $mod)
+	""".run
+
 	// ---------------------------------
 	// Decks
 	// ---------------------------------

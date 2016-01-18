@@ -39,4 +39,56 @@
 		}
 		</div>
 	</div>
+	<script>
+		var update_buffer = {};
+
+		function update_card(dataset, mod) {
+			var id = dataset.id;
+
+			if (id in update_buffer) {
+				update_buffer[id] += mod;
+				return;
+			}
+
+			update_buffer[id] = 0;
+			setTimeout(function() {
+				$.post("@routes.Collection.update()", {
+					card: dataset.card,
+					version: dataset.version,
+					mod: mod
+				}, function() {
+					var buffer_mod = update_buffer[id];
+					delete update_buffer[id];
+					if (buffer_mod != 0) {
+						update_card(dataset, buffer_mod);
+					}
+				});
+			}, 300);
+		}
+
+		function handle_click(e) {
+			if (e.target.tagName == "A") return;
+
+			e.preventDefault();
+			e.stopImmediatePropagation();
+
+			var target = e.currentTarget;
+
+			var mod;
+			switch (e.button) {
+				case 2: mod = -1; break;
+				case 0: mod = +1; break;
+			}
+
+			var old_qte = parseInt(target.getAttribute("quantity"));
+			var qte = Math.max(0, old_qte + mod);
+
+			target.setAttribute("quantity", qte);
+			$(".card-strip div", target).text(qte);
+
+			update_card(target.dataset, mod);
+		}
+
+		$(".card").click(handle_click).contextmenu(handle_click);
+	</script>
 }

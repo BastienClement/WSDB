@@ -35,4 +35,23 @@ class Collection extends Controller {
 			Ok(views.html.extension(name, packed_cards))
 		}
 	}
+
+	/**
+	  * Update the number of unit of a card in the collection
+	  */
+	def update = UserAction.async(parse.urlFormEncoded) { implicit req =>
+		val card = req.body("card").head
+		val version = req.body("version").head
+		val mod = req.body("mod").head.toInt
+		Query.updateCollection(req.user.name, card, version, mod).map { _ =>
+			Ok("OK")
+		}
+	}
+
+	/**
+	  * Display card details.
+	  */
+	def card(id: String) = UserAction.async { implicit req =>
+		???
+	}
 }

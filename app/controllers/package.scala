@@ -142,7 +142,11 @@ package object controllers {
 				if (req.session.get("deck").isDefined && req.deck.isEmpty) {
 					Future.successful(TemporaryRedirect(req.uri).withSession(req.session - "deck"))
 				} else {
-					block(req).recover { case error =>
+					(try {
+						block(req)
+					} catch {
+						case e: Throwable => Future.failed(e)
+					}).recover { case error =>
 						val title = "Fatal Exception"
 						val msg = error match {
 							case e: NoSuchElementException => "The element you requested does not exist in the database."

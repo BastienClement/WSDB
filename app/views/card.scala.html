@@ -1,6 +1,7 @@
 @import views.Utils
 @(card: CompleteCard, quantity: Int = 0)
-<div data-id="@card.identifier" class="card" quantity="@quantity" color="@card.color" title="@card.name">
+<div class="card" quantity="@quantity" color="@card.color" title="@card.name"
+		data-id="@card.identifier" data-card="@card.id" data-version="@card.version">
 	<div class="card-img">
 		<img src="@Utils.cardImageURL(card.identifier)">
 	</div>
@@ -8,7 +9,7 @@
 		@card.identifier
 	</div>
 	<div class="card-corner">
-		<a id="card-corner-details" href="#" class="glyphicon glyphicon-search"></a>
+		<a id="card-corner-details" href="@routes.Collection.card(card.identifier)" class="glyphicon glyphicon-search"></a>
 		<span class="card-corner-text">@card.rarity</span>
 	</div>
 	<div class="card-strip">
