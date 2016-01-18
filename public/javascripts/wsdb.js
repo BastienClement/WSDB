@@ -25,5 +25,5 @@ function update_card(dataset, mod) {
 				update_card(dataset, buffer_mod);
 			}
 		});
-	}, 300);
+	}, 250);
 }

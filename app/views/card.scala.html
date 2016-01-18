@@ -16,12 +16,27 @@
 					@views.html.components.card(card, quantity, big = true)
 				</div>
 				<div class="panel-footer small">
+					<div class="text-center"><strong>Owned</strong></div>
 					<div style="display: flex; justify-content: space-between; align-items: center;">
 						<button id="btn-minus" class="btn btn-default btn-xs" style="width: 30px;">-</button>
-						<span id="card-qte"><strong>@quantity</strong></span>
+						<span id="card-qte">@quantity</span>
 						<button id="btn-plus" class="btn btn-default btn-xs" style="width: 30px;">+</button>
 					</div>
 				</div>
+				@if(request.deck.isDefined) {
+					<div class="panel-footer small">
+						<div class="text-center">
+							<strong>
+								<a href="@routes.Decks.view(request.deck.get.id)">@request.deck.get.name</a>
+							</strong>
+						</div>
+						<div style="display: flex ; justify-content: space-between ; align-items: center ;">
+							<button id="btn-deck-minus" class="btn btn-default btn-xs" style="width: 30px ;">-</button>
+							<span id="card-deck-qte">@request.deck.get.quantityOf(card.id, card.version)</span>
+							<button id="btn-deck-plus" class="btn btn-default btn-xs" style="width: 30px ;">+</button>
+						</div>
+					</div>
+				}
 			</div>
 		</div>
 		<div class="col-md-10">

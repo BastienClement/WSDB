@@ -22,6 +22,14 @@ object Query {
 	case class DeckData(id: Int, name: String, cards: Seq[(CompleteCard, Int)]) {
 		lazy val cardsByLevels = packByCategory(cards) { case (cc, qte) => cc }
 		lazy val universes = cards.map { case (cc, qte) => (cc.universe_id, cc.universe) }.distinct
+
+		def quantityOf(card: String, version: String) = {
+			cards.find { case (c, _) =>
+				c.id == card && c.version == version
+			}.map { case (_, qte) =>
+				qte
+			}.getOrElse(0)
+		}
 	}
 
 	def packByCategory[T](cards: Seq[T])(extractor: (T) => CompleteCard) = {
@@ -155,6 +163,6 @@ object Query {
 	""".run
 
 	def user(login: String) = sql"""
-		SELECT login, email FROM users WHERE active = 1 AND login = $login
-	""".as[(String, String)].headOption.run
+		SELECT login, email, disable_tips FROM users WHERE active = 1 AND login = $login
+	""".as[(String, String, Boolean)].headOption.run
 }

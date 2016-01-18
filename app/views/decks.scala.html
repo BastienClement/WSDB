@@ -11,7 +11,7 @@
 			<table class="table">
 				<thead>
 					<tr>
-						<th style="width: 30px;"></th>
+						<th style="width: 30px ;"></th>
 						<th>Deck name</th>
 						<th>Universe</th>
 						<th class="text-right">Card count</th>
@@ -19,38 +19,38 @@
 					</tr>
 				</thead>
 				<tbody>
-					@for(deck <- decks; current = request.deck.isDefined && request.deck.get.id == deck.id) {
-						<tr @if(current) { class="info" }>
-							<td style="color: #999;">#@deck.id</td>
-							<td>
-								<a href="/decks/view/@deck.id">@deck.name</a>
-							</td>
-							<td>
-								@for(universe <- deck.universes) {
-									<a href="/cards/@universe._1" class="label label-default">@universe._2</a>
-								}
-								@if(deck.universes.isEmpty) {
-									-
-								}
-							</td>
-							<td class="text-right">
-								@if(deck.ncx_count + deck.cx_count > 0) {
-									@deck.ncx_count + @deck.cx_count
-								} else {
-									0
-								}
-								<span style="color: #999;">/ 50</span>
-							</td>
-							<td class="text-right actions">
-								@if(current) {
-									<a href="@routes.Decks.unselect()" class="btn btn-xs btn-primary">Done</a>
-								} else {
-									<a href="@routes.Decks.select(deck.id)" class="btn btn-xs btn-default">Edit</a>
-								}
-								<button class="btn btn-xs btn-danger" data-id="@deck.id" style="width: 50px; text-align: center;">Delete</button>
-							</td>
-						</tr>
-					}
+				@for(deck <- decks; current = request.deck.isDefined && request.deck.get.id == deck.id) {
+					<tr @if(current) {class="info" }>
+						<td style="color: #999 ;">#@deck.id</td>
+						<td>
+							<a href="/decks/view/@deck.id">@deck.name</a>
+						</td>
+						<td>
+							@for(universe <- deck.universes) {
+								<a href="/cards/@universe._1" class="label label-default">@universe._2</a>
+							}
+							@if(deck.universes.isEmpty) {
+								-
+							}
+						</td>
+						<td class="text-right">
+							@if(deck.ncx_count + deck.cx_count > 0) {
+								@deck.ncx_count + @deck.cx_count
+							} else {
+								0
+							}
+						<span style="color: #999 ;">/ 50</span>
+						</td>
+						<td class="text-right actions">
+							@if(current) {
+								<a href="@routes.Decks.unselect()" class="btn btn-xs btn-primary">Done</a>
+							} else {
+								<a href="@routes.Decks.select(deck.id)" class="btn btn-xs btn-default">Edit</a>
+							}
+						<button class="btn btn-xs btn-danger" data-id="@deck.id" style="width: 50px ; text-align: center ;">Delete</button>
+						</td>
+					</tr>
+				}
 				</tbody>
 			</table>
 			@if(decks.isEmpty) {
@@ -61,55 +61,55 @@
 			}
 		</div>
 		<div class="col-md-3">
-			@if(request.deck.isDefined) {
-				<div class="panel panel-info">
-					<div class="panel-heading">
-						<h3 class="panel-title">Rename deck</h3>
-					</div>
-					<div class="panel-body">
-					@b3.form(routes.Decks.rename()) {
-						@b3.text(newDeck("name"), 'placeholder -> "New deck name", 'class -> "input-sm", 'value -> request.deck.get.name)
-						<input type="submit" class="btn btn-default btn-xs" value="Rename">
+		@if(request.deck.isDefined) {
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h3 class="panel-title">Rename deck</h3>
+				</div>
+				<div class="panel-body">
+				@b3.form(routes.Decks.rename()) {
+					@b3.text(newDeck("name"), 'placeholder -> "New deck name", 'class -> "input-sm", 'value -> request.deck.get.name)
+					<input type="submit" class="btn btn-default btn-xs" value="Rename">
+				}
+				</div>
+			</div>
+			<div class="tips alert alert-warning small">
+				<strong>You have selected a deck!</strong><br>
+				This deck can now be edited while browsing your
+				<a href="@routes.Collection.index()">collection</a>.
+			</div>
+		} else {
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<h3 class="panel-title">Create new deck</h3>
+				</div>
+				<div class="panel-body">
+				@b3.form(routes.Decks.create) {
+					@b3.text(newDeck("name"), 'placeholder -> "Deck name", 'class -> "input-sm")
+					<input type="submit" class="btn btn-default btn-xs" value="Create">
 					}
-					</div>
 				</div>
-				<div class="alert alert-warning small">
-					<strong>You have selected a deck!</strong><br>
-					This deck can now be edited while browsing your
-					<a href="@routes.Collection.index()">collection</a>.
-				</div>
-			} else {
-				<div class="panel panel-success">
-					<div class="panel-heading">
-						<h3 class="panel-title">Create new deck</h3>
-					</div>
-					<div class="panel-body">
-						@b3.form(routes.Decks.create) {
-							@b3.text(newDeck("name"), 'placeholder -> "Deck name", 'class -> "input-sm")
-							<input type="submit" class="btn btn-default btn-xs" value="Create">
-						}
-					</div>
-				</div>
-			}
+			</div>
+		}
 		</div>
 	</div>
 	<form action="@routes.Decks.delete" method="POST" id="delete-form">
 		<input type="hidden" name="id" value="" id="delete-id">
 	</form>
 	<script>
-		$(".actions .btn-danger").click(function(ev) {
-			var btn = ev.target;
-			if (btn.sure) {
-				clearTimeout(btn.sure);
-				$("#delete-id").val(btn.dataset.id);
-				$("#delete-form").submit();
-			} else {
-				btn.sure = setTimeout(function() {
-					btn.innerText = "Delete";
-					btn.sure = void 0;
-				}, 2000);
-				btn.innerText = "Sure?";
-			}
-		});
+			$(".actions .btn-danger").click(function(ev) {
+				var btn = ev.target;
+				if (btn.sure) {
+					clearTimeout(btn.sure);
+					$("#delete-id").val(btn.dataset.id);
+					$("#delete-form").submit();
+				} else {
+					btn.sure = setTimeout(function() {
+						btn.innerText = "Delete";
+						btn.sure = void 0;
+					}, 2000);
+					btn.innerText = "Sure?";
+				}
+			});
 	</script>
 }

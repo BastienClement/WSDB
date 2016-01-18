@@ -97,7 +97,7 @@ package object controllers {
 	}
 
 	/** Connected user **/
-	case class User(name: String, mail: String)
+	case class User(name: String, mail: String, disable_tips: Boolean)
 
 	/** A request with user information */
 	class UserRequest[A](val optUser: Option[User], val deck: Option[DeckData], request: Request[A])
