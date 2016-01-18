@@ -1,8 +1,9 @@
 @import views.Page
 @import models.CompleteCard
+@import views.html.components.cards_list
 @(name: String, extensions: Iterable[Iterable[(CompleteCard, Int)]])(implicit request: UserRequest[_])
 
-@main(s"Extensions from $name", Page.Collection) {
+@main(name, Page.Collection) {
 	<div class="page-header">
 		<h2><span style="color: #999;">Universe:</span> @name</h2>
 	</div>

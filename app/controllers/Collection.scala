@@ -43,7 +43,7 @@ class Collection extends Controller {
 		val card = req.body("card").head
 		val version = req.body("version").head
 		val mod = req.body("mod").head.toInt
-		Query.updateCollection(req.user.name, card, version, mod).map { _ =>
+		for (_ <- Query.updateCollection(req.user.name, card, version, mod)) yield {
 			Ok("OK")
 		}
 	}
@@ -52,6 +52,10 @@ class Collection extends Controller {
 	  * Display card details.
 	  */
 	def card(id: String) = UserAction.async { implicit req =>
-		???
+		(for ((card, quantity) <- Query.cardDetail(id, req.user.name)) yield {
+			Ok(views.html.card(card, quantity))
+		}).recover { case _ =>
+			NotFound(views.html.error("Not found", "This cards does not seem to exist.", id))
+		}
 	}
 }

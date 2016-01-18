@@ -41,6 +41,11 @@ body {
 	transition: all ease-out .2s;
 }
 
+.card[big] img {
+	width: 130px;
+	height: 182px;
+}
+
 .card-strip {
 	position: absolute;
 	top: 17px;
@@ -66,7 +71,7 @@ body {
 	filter: grayscale(100%);
 }
 
-.card:hover img {
+.card:not([big]):hover img {
 	opacity: 1;
 	-webkit-filter: grayscale(0%);
 	-moz-filter: grayscale(0%);
@@ -121,7 +126,7 @@ body {
 	text-decoration: none;
 }
 
-.card:hover .card-corner a {
+.card:not([big]):hover .card-corner a {
 	opacity: 1;
 	left: 0;
 }
@@ -134,6 +139,14 @@ body {
 	width: 100%;
 	text-align: center;
 	transition: all ease-out .3s;
+}
+
+.card[big] .card-corner {
+	display: none;
+}
+
+.card[big] .card-label {
+	display: none;
 }
 
 .card[color="Yellow"] .card-img { border-color: rgba(239, 210, 10, 0.9); }

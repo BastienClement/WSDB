@@ -1,18 +1,85 @@
-@import views.Utils
-@(card: CompleteCard, quantity: Int = 0)
-<div class="card" quantity="@quantity" color="@card.color" title="@card.name"
-		data-id="@card.identifier" data-card="@card.id" data-version="@card.version">
-	<div class="card-img">
-		<img src="@Utils.cardImageURL(card.identifier)">
+@import views.Page
+@(card: CompleteCard, quantity: Int)(implicit request: UserRequest[_])
+@main(card.name, Page.Collection) {
+	<div class="page-header">
+		<h2><span style="color: #999;">Card:</span> @card.name <small>(@card.identifier)</small></h2>
 	</div>
-	<div class="card-label">
-		@card.identifier
+	<ol class="breadcrumb">
+		<li><a href="@routes.Collection.index()">Universes</a></li>
+		<li><a href="@routes.Collection.universe(card.universe_id)">@card.universe</a></li>
+		<li class="active">@card.name</li>
+	</ol>
+	<div class="row" style="margin-bottom: 15px;">
+		<div class="col-md-2" style="display: flex; justify-content: center; padding-top: 15px;">
+			@views.html.components.card(card, quantity, big = true)
+		</div>
+		<div class="col-md-10">
+			<table class="table table">
+				<tr>
+					<th>Identifier</th>
+					<td>@card.identifier</td>
+					<th>Rarity</th>
+					<td>@card.rarity</td>
+				</tr>
+				<tr>
+					<th>Universe</th>
+					<td><a href="@routes.Collection.universe(card.universe_id)">@card.universe</a></td>
+					<th>Extension</th>
+					<td><a href="@routes.Collection.universe(card.universe_id)#ext-@card.extension_id">@card.extension</a></td>
+				</tr>
+				<tr>
+					<th>Type</th>
+					<td>@card.tpe</td>
+					<th>Color</th>
+					<td>@card.color</td>
+				</tr>
+				<tr>
+					<th>Level</th>
+					<td>@card.level</td>
+					<th>Trigger</th>
+					<td>@card.trigger</td>
+				</tr>
+				<tr>
+					<th>Cost</th>
+					<td>@card.cost</td>
+					<th>Soul</th>
+					<td>@card.soul</td>
+				</tr>
+				<tr>
+					<th>Power</th>
+					<td>@card.power</td>
+					<th>Limitation</th>
+					<td>@card.limitation</td>
+				</tr>
+				<tr>
+					<th>Trait 1</th>
+					<td>@card.trait1</td>
+					<th>Trait 2</th>
+					<td>@card.trait2</td>
+				</tr>
+				<tr>
+					<th>Ability</th>
+					<td colspan="3"><pre>@card.ability</pre></td>
+				</tr>
+				<tr>
+					<th>Flavor</th>
+					<td colspan="3"><em>@card.flavor</em></td>
+				</tr>
+			</table>
+		</div>
 	</div>
-	<div class="card-corner">
-		<a id="card-corner-details" href="@routes.Collection.card(card.identifier)" class="glyphicon glyphicon-search"></a>
-		<span class="card-corner-text">@card.rarity</span>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="panel panel-info">
+				<div class="panel-heading">Possible combo with this card</div>
+				<div class="panel-body">...</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="panel panel-info">
+				<div class="panel-heading">Decks containing this card</div>
+				<div class="panel-body">...</div>
+			</div>
+		</div>
 	</div>
-	<div class="card-strip">
-		<div>@quantity</div>
-	</div>
-</div>
+}

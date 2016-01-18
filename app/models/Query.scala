@@ -20,7 +20,7 @@ object Query {
 		r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, (r.<<, r.<<), (r.<<, r.<<), r.<<))
 
 	// ---------------------------------
-	// Universes
+	// Collection
 	// ---------------------------------
 
 	case class UniverseListRow(universe: Universe, extensions: Int, cards: Int)
@@ -42,6 +42,14 @@ object Query {
 		VALUES ($user, $card, $version, GREATEST(0, $mod))
       ON DUPLICATE KEY UPDATE quantity = GREATEST(0, quantity + $mod)
 	""".run
+
+	def cardDetail(identifier: String, user: String) = {
+		CompleteCards.filter(_.identifier === identifier).joinLeft(Collections).on { case (cc, col) =>
+			cc.id === col.card && cc.version === col.version && col.user === user
+		}.map { case (cc, col) =>
+			(cc, col.map(_.quantity).ifNull(0))
+		}.result.head.run
+	}
 
 	// ---------------------------------
 	// Decks

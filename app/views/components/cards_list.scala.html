@@ -1,6 +1,6 @@
 @(cards: Iterable[(CompleteCard, Int)])
 <div class="cards-list">
 @for((card, quantity) <- cards) {
-	@views.html.card(card, quantity)
+	@views.html.components.card(card, quantity)
 }
 </div>
