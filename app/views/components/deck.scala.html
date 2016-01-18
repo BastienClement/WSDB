@@ -1,0 +1,14 @@
+@()(implicit request: UserRequest[_])
+@if(request.deck.isDefined) {
+	@defining(request.deck.get) { deck =>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<strong>Deck:</strong>
+				@deck.name
+			</div>
+			<div class="panel-body">
+				...
+			</div>
+		</div>
+	}
+}

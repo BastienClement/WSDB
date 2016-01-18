@@ -28,12 +28,31 @@
 	<div class="page-header">
 		<h2>Collection</h2>
 	</div>
+	<ol class="breadcrumb">
+		<li class="active">Universes</li>
+	</ol>
 	<div class="row">
-		<div class="col-md-6">
-			@universesList(universes._1)
-		</div>
-		<div class="col-md-6">
-			@universesList(universes._2)
-		</div>
+		@defining((request.deck.isDefined, request.deck.orNull)) { case (editing, deck) =>
+			@if(editing) {
+				<div class="col-md-3">
+					@views.html.components.deck()
+					<div class="alert alert-warning small">
+						<strong>You have selected a deck!</strong><br>
+						You can edit its content while browsing your collection.
+						You can choose which deck you want to edit on the <a href="@routes.Decks.list()">decks</a> page.
+					</div>
+				</div>
+				<div class="col-md-9">
+			}
+			<div class="col-md-6">
+				@universesList(universes._1)
+			</div>
+			<div class="col-md-6">
+				@universesList(universes._2)
+			</div>
+			@if(editing) {
+				</div>
+			}
+		}
 	</div>
 }
