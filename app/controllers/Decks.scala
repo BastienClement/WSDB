@@ -41,7 +41,7 @@ class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18n
 			owner <- Query.deckOwner(id)
 			if owner == req.user.name
 		} yield {
-			Redirect(routes.Collection.index()).addingToSession("deck" -> id.toString)
+			Redirect(req.headers("referer")).addingToSession("deck" -> id.toString)
 		}
 	}
 
