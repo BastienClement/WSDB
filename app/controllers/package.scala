@@ -1,12 +1,12 @@
 import java.sql.SQLIntegrityConstraintViolationException
-import models.Query.DeckData
 import org.apache.commons.lang3.exception.ExceptionUtils
 import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc.Results._
 import play.api.mvc._
 import scala.collection.mutable
-import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 import scala.language.{higherKinds, implicitConversions}
 import slick.dbio.{DBIOAction, NoStream}
 import slick.driver.JdbcProfile
@@ -100,10 +100,19 @@ package object controllers {
 	case class User(name: String, mail: String, disable_tips: Boolean)
 
 	/** A request with user information */
-	class UserRequest[A](val optUser: Option[User], val deck: Option[DeckData], request: Request[A])
+	class UserRequest[A](val optUser: Option[User], request: Request[A])
 		extends WrappedRequest[A](request) {
 		val user = optUser.orNull
 		val authenticated = optUser.isDefined
+		lazy val deck = {
+			val future_deck = request.session.get("deck").map(_.toInt) match {
+				case Some(id) if optUser.isDefined =>
+					models.Query.deckData(id, user.name).map(Some(_)).recover { case e => None }
+				case _ =>
+					Future.successful(None)
+			}
+			Await.result(future_deck, 1.second)
+		}
 	}
 
 	/** Authenticated action */
@@ -114,14 +123,8 @@ package object controllers {
 					case Some(login) => models.Query.user(login).map(_.map(User.tupled))
 					case _ => Future.successful(None)
 				}
-				deck <- request.session.get("deck").map(_.toInt) match {
-					case Some(id) if user.isDefined =>
-						models.Query.deckData(id, user.get.name).map(Some(_)).recover { case e => None }
-					case _ =>
-						Future.successful(None)
-				}
 			} yield {
-				new UserRequest(user, deck, request)
+				new UserRequest(user, request)
 			}
 		}
 

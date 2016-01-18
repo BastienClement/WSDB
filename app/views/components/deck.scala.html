@@ -11,9 +11,7 @@
 				<table>
 				@for((category, cards) <- deck.cardsByLevels) {
 					<tr>
-						<th colspan="2">
-						@category
-						</th>
+						<th colspan="2">@category</th>
 					</tr>
 					@for((card, qte) <- cards) {
 						<tr>
