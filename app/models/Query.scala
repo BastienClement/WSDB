@@ -19,6 +19,21 @@ object Query {
 	implicit val GetCompleteCard = GetResult(r => CompleteCard(r.<<, r.<<, r.<<, r.<<, (r.<<, r.<<), (r.<<, r.<<),
 		r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, (r.<<, r.<<), (r.<<, r.<<), r.<<))
 
+	case class DeckData(id: Int, name: String, cards: Seq[(CompleteCard, Int)]) {
+		lazy val cardsByLevels = packByCategory(cards) { case (cc, qte) => cc }
+		lazy val universes = cards.map { case (cc, qte) => (cc.universe_id, cc.universe) }.distinct
+	}
+
+	def packByCategory[T](cards: Seq[T])(extractor: (T) => CompleteCard) = {
+		cards.packWithKey { case t =>
+			val card = extractor(t)
+			card.tpe match {
+				case "Climax" => "Climax"
+				case _ => s"Level ${card.level}"
+			}
+		}
+	}
+
 	// ---------------------------------
 	// Collection
 	// ---------------------------------
@@ -108,6 +123,21 @@ object Query {
 		UPDATE decks SET name = $name
 		WHERE id = $id AND user = $user
 	""".run
+
+	def deckData(id: Int, user: String) = {
+		for {
+			name <- Decks.filter(d => d.id === id && d.user === user).map(_.name).result.head.run
+			cards <- CompleteCards.join(DeckContents).on { case (cc, dc) =>
+				cc.id === dc.card && cc.version === dc.version && dc.deck === id
+			}.map { case (cc, dc) =>
+				(cc, dc.quantity)
+			}.sortBy { case (cc, q) =>
+				(cc.level.desc, cc.tpe, cc.identifier)
+			}.result.run
+		} yield {
+			DeckData(id, name, cards)
+		}
+	}
 
 	// ---------------------------------
 	// Auth

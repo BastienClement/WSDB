@@ -1,13 +1,47 @@
-@()(implicit request: UserRequest[_])
-@if(request.deck.isDefined) {
-	@defining(request.deck.get) { deck =>
-		<div class="panel panel-info">
+@import models.Query.DeckData
+@import views.Utils
+@(static_deck: DeckData = null)(implicit request: UserRequest[_])
+@if(static_deck != null || request.deck.isDefined) {
+	@defining(if (static_deck != null) static_deck else request.deck.get) { deck =>
+		<div class="deck panel panel-info">
 			<div class="panel-heading">
 				<strong>Deck:</strong>
 				@deck.name
 			</div>
-			<div class="panel-body">
-				...
+			<div class="panel-body small">
+				<table>
+					@for((category, cards) <- deck.cardsByLevels) {
+						<tr>
+							<th colspan="2">
+								@category
+							</th>
+						</tr>
+						@for((card, qte) <- cards) {
+							<tr>
+								<td class="qte"><span class="label label-primary"><strong>@qte</strong></span></td>
+								<td class="nowrap" title="@card.identifier">
+									<a href="@routes.Collection.card(card.identifier)">
+										@card.name
+										@if(card.version != "") {
+											(@card.version)
+										}
+									</a>
+								</td>
+							</tr>
+						}
+					}
+				</table>
+			</div>
+			<div class="panel-footer">
+				@if(static_deck == null) {
+					<a href="@routes.Decks.view(deck.id)" class="btn btn-default btn-xs">Full view</a>
+					<a href="@routes.Decks.unselect()" class="btn btn-default btn-xs">Done</a>
+				} else {
+					<strong class="small">Universes:</strong><br>
+					@for((id, name) <- deck.universes) {
+						<a href="@routes.Collection.universe(id)" class="label label-default">@name</a>
+					}
+				}
 			</div>
 		</div>
 	}

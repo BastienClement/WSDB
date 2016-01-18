@@ -1,19 +1,29 @@
 @import views.Page
-@(name: String, deck: Vector[((String, String), Vector[(CompleteCard, Int, Int)])])(implicit request: UserRequest[_])
+@import models.Query.DeckData
+@import views.Utils
+@(deck: DeckData, cards_list: Vector[(String, Vector[(CompleteCard, Int, Int)])])(implicit request: UserRequest[_])
+
 @main("Decks management", Page.Decks) {
     <div class="page-header">
-        <h2><span style="color: #999;">Deck:</span> @name</h2>
+        <h2><span style="color: #999;">Deck:</span> @deck.name</h2>
     </div>
-
-    @for(((tpe, lvl), cards) <- deck) {
-        <h3>
-            @{tpe match {
-                case "Climax" => "Climax"
-                case _ => s"Level $lvl"
-            }}
-        </h3>
-        @for((card, col_q, deck_q) <- cards) {
-            @card.name
-        }
-    }
+	<div class="row">
+		<div class="col-md-3">
+			@views.html.components.deck(deck)
+			@if(request.deck.isDefined && request.deck.get.id == deck.id) {
+				<div class="alert alert-warning small">
+					<strong>This deck is currently selected!</strong><br>
+					You can edit its content while browsing your
+					<a href="@routes.Collection.index()">collection</a>.
+				</div>
+			}
+			@views.html.components.filters()
+		</div>
+		<div class="col-md-9">
+			@for((category, cards) <- cards_list) {
+				<h3>@category</h3>
+				@views.html.components.cards_list(cards.map { case (c, cq, dq) => (c, dq) })
+			}
+		</div>
+	</div>
 }

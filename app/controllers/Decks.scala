@@ -40,7 +40,7 @@ class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18n
 			owner <- Query.deckOwner(id)
 			if owner == req.user.name
 		} yield {
-			Redirect(routes.Decks.list()).withSession(req.session + ("deck" -> id.toString))
+			Redirect(routes.Collection.index()).withSession(req.session + ("deck" -> id.toString))
 		}
 	}
 
@@ -48,7 +48,7 @@ class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18n
 	  * Unselect the previously selected deck.
 	  */
 	def unselect = Authenticated { implicit req =>
-		Redirect(routes.Decks.list()).withSession(req.session - "deck")
+		Redirect(req.headers("referer")).withSession(req.session - "deck")
 	}
 
 	/**
@@ -83,11 +83,11 @@ class Decks @Inject()(val messagesApi: MessagesApi) extends Controller with I18n
 	  */
 	def view(id: Int) = Authenticated.async { implicit req =>
 		for {
-			name <- Query.deckName(id)
+			data <- Query.deckData(id, req.user.name)
 			cards <- CompleteCards.filterDeck(id, req)
 		} yield {
-			val packed_cards = cards.packWithKey { case (card, _, _) => (card.tpe, card.level) }
-			Ok(views.html.deck_content(name, packed_cards))
+			val packed_cards = Query.packByCategory(cards) { case (cc, _, _) => cc }
+			Ok(views.html.deck_content(data, packed_cards))
 		}
 	}
 }

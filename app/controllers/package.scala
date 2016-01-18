@@ -1,5 +1,5 @@
 import java.sql.SQLIntegrityConstraintViolationException
-import models.{CompleteCards, DeckContents, Decks, CompleteCard}
+import models.Query.DeckData
 import org.apache.commons.lang3.exception.ExceptionUtils
 import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
@@ -10,7 +10,6 @@ import scala.concurrent.Future
 import scala.language.{higherKinds, implicitConversions}
 import slick.dbio.{DBIOAction, NoStream}
 import slick.driver.JdbcProfile
-import slick.driver.MySQLDriver.api._
 
 package object controllers {
 	val DB = DatabaseConfigProvider.get[JdbcProfile](Play.current).db
@@ -100,13 +99,8 @@ package object controllers {
 	/** Connected user **/
 	case class User(name: String, mail: String)
 
-	/** The currently selected deck */
-	case class Deck(id: Int, name: String, cards: Seq[CompleteCard]) {
-
-	}
-
 	/** A request with user information */
-	class UserRequest[A](val optUser: Option[User], val deck: Option[Deck], request: Request[A])
+	class UserRequest[A](val optUser: Option[User], val deck: Option[DeckData], request: Request[A])
 		extends WrappedRequest[A](request) {
 		val user = optUser.orNull
 		val authenticated = optUser.isDefined
@@ -122,15 +116,9 @@ package object controllers {
 				}
 				deck <- request.session.get("deck").map(_.toInt) match {
 					case Some(id) if user.isDefined =>
-						(for {
-							name <- Decks.filter(d => d.id === id && d.user === user.get.name).map(_.name).result.head.run
-							cards <- CompleteCards.join(DeckContents).on { case (cc, dc) =>
-								cc.id === dc.card && cc.version === dc.version && dc.deck === id
-							}.map { case (cc, dc) => cc }.sortBy(_.identifier).result.run
-						} yield {
-							Some(Deck(id, name, cards))
-						}).recover { case e => None }
-					case _ => Future.successful(None)
+						models.Query.deckData(id, user.get.name).map(Some(_)).recover { case e => None }
+					case _ =>
+						Future.successful(None)
 				}
 			} yield {
 				new UserRequest(user, deck, request)
