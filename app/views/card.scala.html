@@ -10,8 +10,19 @@
 		<li class="active">@card.name</li>
 	</ol>
 	<div class="row" style="margin-bottom: 15px;">
-		<div class="col-md-2" style="display: flex; justify-content: center; padding-top: 15px;">
-			@views.html.components.card(card, quantity, big = true)
+		<div class="col-md-2">
+			<div class="panel panel-default" id="the-card">
+				<div class="panel-body" style="display: flex; justify-content: center; padding: 15px 5px;">
+					@views.html.components.card(card, quantity, big = true)
+				</div>
+				<div class="panel-footer small">
+					<div style="display: flex; justify-content: space-between; align-items: center;">
+						<button id="btn-minus" class="btn btn-default btn-xs" style="width: 30px;">-</button>
+						<span id="card-qte"><strong>@quantity</strong></span>
+						<button id="btn-plus" class="btn btn-default btn-xs" style="width: 30px;">+</button>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div class="col-md-10">
 			<table class="table table">
@@ -82,4 +93,27 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		var qte = @quantity;
+		var qte_below = $("#card-qte");
+		var qte_over = $("#the-card").find(".card-strip div");
+		var card = $("#the-card").find(".card")[0];
+
+		function handle_click(mod) {
+			return function() {
+				var old_qte = qte;
+				qte = Math.max(0, old_qte + mod);
+
+				qte_below.text(qte);
+				qte_over.text(qte);
+
+				if (qte != old_qte) {
+					update_card(card.dataset, mod);
+				}
+			}
+		}
+
+		$("#btn-minus").click(handle_click(-1));
+		$("#btn-plus").click(handle_click(+1));
+	</script>
 }

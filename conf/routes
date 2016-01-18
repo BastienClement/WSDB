@@ -25,5 +25,6 @@ POST        /register                 controllers.Auth.registerPost
 GET         /logout                   controllers.Auth.logout
 
 # Map static resources from the /public folder to the /assets URL path
+GET         /js/routes                controllers.Global.jsRoutes
 GET         /assets/*file             controllers.Assets.at(path="/public", file)
-GET         /*path                    controllers.Error.fourOhFour(path)
+GET         /*path                    controllers.Global.fourOhFour(path)

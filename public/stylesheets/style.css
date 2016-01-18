@@ -24,26 +24,30 @@ body {
 	padding: 5px 10px 5px 0;
 	position: relative;
 	font-size: 12px;
+	width: 132px;
+	height: 183px;
+	box-sizing: content-box;
 	overflow: hidden;
 	line-height: 0;
 }
 
+.card[big] {
+	padding: 0;
+}
+
 .card .card-img {
+	width: 100%;
+	height: 100%;
 	border: 2px solid;
 	border-radius: 10px;
 	overflow: hidden;
 }
 
 .card img {
-	width: 125px;
-	height: 175px;
+	width: 100%;
+	height: 100%;
 	border-radius: 8px;
 	transition: all ease-out .2s;
-}
-
-.card[big] img {
-	width: 130px;
-	height: 182px;
 }
 
 .card-strip {
@@ -57,6 +61,10 @@ body {
 	border-right: 20px solid transparent;
 	line-height: 1.5em;
 	color: #fff;
+}
+
+.card[big] .card-strip  {
+	top: 12px;
 }
 
 .card[quantity="0"] .card-strip {
