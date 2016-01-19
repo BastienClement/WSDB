@@ -204,7 +204,7 @@ body {
 	padding-top: 10px;
 }
 
-.deck tr:nth-child(2) th {
+.deck tr:first-child th {
 	padding-top: 0;
 }
 
@@ -217,8 +217,16 @@ body {
 	line-height: 0;
 }
 
-.deck-table .dummy td:first-child {
-	width: 24px;
+.deck-table tr:first-child th:first-child {
+	width: 30px;
+}
+
+.deck-table .label {
+	width: 21px;
+}
+
+.deck-content h3:first-child {
+	margin-top: 0;
 }
 
 /** Bootstrap fixes **/

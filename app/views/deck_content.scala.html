@@ -16,11 +16,8 @@
 					<a href="@routes.Collection.index()">collection</a>.
 				</div>
 			}
-			@if(cards_list.nonEmpty) {
-				@views.html.components.filters()
-			}
 		</div>
-		<div class="col-md-9">
+		<div class="col-md-9 deck-content">
 		@for((category, cards) <- cards_list) {
 			<h3>@category</h3>
 			@views.html.components.cards_list(cards.map { case (c, cq, dq) => (c, cq) }, deck)

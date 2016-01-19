@@ -3,17 +3,19 @@
 @if(static_deck != null || request.deck.isDefined) {
 	@defining(if(static_deck != null) static_deck else request.deck.get) { deck =>
 		<div class="deck panel panel-info" id="sidebar-deck">
-			<div class="panel-heading"><strong>Deck:</strong> @deck.name</div>
+			<div class="panel-heading">
+				<strong>Deck:</strong>
+				@deck.name
+				<span class="label label-warning pull-right" style="margin-top: 2px;">@deck.cards.map(_._2).sum</span></div>
 			<div class="panel-body small">
 			@if(deck.cards.isEmpty) {
 				This deck is currently empty.
 			} else {
 				<table class="deck-table">
 				@for((category, cards) <- deck.cardsByLevels) {
-					<!-- Required for sizing -->
-					<tr class="dummy"><td></td><td></td></tr>
 					<tr>
-						<th colspan="2">@category</th>
+						<th><span class="label label-warning">@cards.map(_._2).sum</span></th>
+						<th>@category</th>
 					</tr>
 					@for((card, qte) <- cards) {
 						<tr>
