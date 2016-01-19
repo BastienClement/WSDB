@@ -4,9 +4,16 @@
 	@defining(if(static_deck != null) static_deck else request.deck.get) { deck =>
 		<div class="deck panel panel-info" id="sidebar-deck">
 			<div class="panel-heading">
-				<strong>Deck:</strong>
-				@deck.name
-				<span class="label label-warning pull-right" style="margin-top: 2px;">@deck.cards.map(_._2).sum</span></div>
+				<div style="display: flex;">
+					<div style="flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+						<strong>Deck:</strong>
+						<span>@deck.name</span>
+					</div>
+					<div style="margin-left: 15px;">
+						<span class="label label-warning pull-right" style="margin-top: 2px;">@deck.cards.map(_._2).sum</span>
+					</div>
+				</div>
+			</div>
 			<div class="panel-body small">
 			@if(deck.cards.isEmpty) {
 				This deck is currently empty.

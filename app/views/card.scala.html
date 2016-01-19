@@ -27,7 +27,7 @@
 				}
 				@if(request.deck.isDefined) {
 					<div class="panel-footer small">
-						<div class="text-center">
+						<div class="text-center" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
 							<strong>
 								<a href="@routes.Decks.view(request.deck.get.id)">@request.deck.get.name</a>
 							</strong>
@@ -119,27 +119,29 @@
 					<div class="panel-heading">Decks containing this card</div>
 					<div class="panel-body">
 					@if(decks.nonEmpty) {
-						<table class="table" style="margin: 0 ;">
+						<table class="table" style="margin: 0; table-layout: fixed; width: 100%">
 							<thead>
 								<tr>
-									<th style="width: 30px;"></th>
+									<th style="width: 45px;"></th>
 									<th>Name</th>
-									<th>Quantity</th>
-									<th class="text-right">Actions</th>
+									<th style="width: 80px;" class="text-center">Quantity</th>
+									<th style="width: 70px;" class="text-right">Actions</th>
 								</tr>
 							</thead>
 							<tbody>
 								@for((id, name, qte) <- decks) {
 									<tr>
 										<td style="color: #999;">#@id</td>
-										<td><a href="@routes.Decks.view(id)">@name</a></td>
-										<td><span class="label label-primary">@qte</span></td>
+										<td style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+											<a href="@routes.Decks.view(id)">@name</a>
+										</td>
+										<td class="text-center"><span class="label label-primary">@qte</span></td>
 										<td style="width: 30px ;" class="text-right">
-										@if(request.deck_id.contains(id)) {
-											<a href="@routes.Decks.unselect()" class="btn btn-xs btn-primary">Done</a>
-										} else {
-											<a href="@routes.Decks.select(id)" class="btn btn-xs btn-default">Edit</a>
-										}
+											@if(request.deck_id.contains(id)) {
+												<a href="@routes.Decks.unselect()" class="btn btn-xs btn-primary">Done</a>
+											} else {
+												<a href="@routes.Decks.select(id)" class="btn btn-xs btn-default">Edit</a>
+											}
 										</td>
 									</tr>
 								}
