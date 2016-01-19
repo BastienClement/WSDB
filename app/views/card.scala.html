@@ -187,6 +187,7 @@
 
 			function handle_deck(mod) {
 				return function() {
+					if (mod < 1 && deck_qte == 0) return;
 					update_deck(card_id, card_version, mod, function() {
 						deck_qte = Math.max(0, deck_qte + mod);
 						$("#card-deck-qte").text(deck_qte);

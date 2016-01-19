@@ -60,10 +60,12 @@
 				@if(request.deck.isDefined) {
 					var id = target.dataset.card;
 					var version = target.dataset.version;
+					var qte_indicator = $(".card-deckqte", target)[0];
+					var cur_qte =parseInt(qte_indicator.dataset.qte);
+					if (cur_qte == 0 && mod < 1) return;
 					update_deck(id, version, mod, function(res) {
 						$("#sidebar-deck").replaceWith(res);
-						var qte_indicator = $(".card-deckqte", target)[0];
-						var qte = Math.max(0, parseInt(qte_indicator.dataset.qte) + mod);
+						var qte = Math.max(0, cur_qte + mod);
 						qte_indicator.dataset.qte = qte;
 						$(".label", qte_indicator).text(qte);
 					}, true);
