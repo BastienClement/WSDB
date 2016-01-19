@@ -41,7 +41,7 @@
 		}
 		</div>
 	</div>
-	@if(!request.authenticated) {
+	@if(request.authenticated) {
 		<script>
 			function handle_click(e) {
 				if (e.target.tagName == "A") return;
