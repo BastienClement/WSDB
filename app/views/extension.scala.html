@@ -14,17 +14,19 @@
 	<div class="row">
 		<div class="col-md-3">
 			@views.html.components.deck()
-			@if(request.deck.isEmpty) {
-				<div class="tips alert alert-warning small">
-					<strong>Usage: </strong>
-					Use left-click or right-click to add or remove card from your collection.
-				</div>
-			} else {
-				<div class="tips alert alert-warning small">
-					<strong>You are currently editing a deck.</strong><br>
-					Clicking on a card will add or remove that card from your deck instead
-					of modifying your collection.
-				</div>
+			@if(request.authenticated) {
+				@if(request.deck.isEmpty) {
+					<div class="tips alert alert-warning small">
+						<strong>Usage: </strong>
+						Use left-click or right-click to add or remove card from your collection.
+					</div>
+				} else {
+					<div class="tips alert alert-warning small">
+						<strong>You are currently editing a deck.</strong><br>
+						Clicking on a card will add or remove that card from your deck instead
+						of modifying your collection.
+					</div>
+				}
 			}
 			<div class="nav nav-stacked nav-pills" style="margin-bottom: 20px ;">
 			@for(cards <- extensions; (c, _) = cards.head) {
@@ -54,7 +56,10 @@
 				case 0: mod = +1; break;
 			}
 
-			@if(request.deck.isDefined) {
+			@if(!request.authenticated) {
+				var uid = target.dataset.card + target.dataset.version;
+				document.location = routes.controllers.Collection.card(uid).url;
+			} else { if(request.deck.isDefined) {
 				var id = target.dataset.card;
 				var version = target.dataset.version;
 				update_deck(id, version, mod, function(res) {
@@ -74,7 +79,7 @@
 				if (qte != old_qte) {
 					update_card(target.dataset, mod);
 				}
-			}
+			}}
 		}
 
 		$(".card").click(handle_click).contextmenu(handle_click);

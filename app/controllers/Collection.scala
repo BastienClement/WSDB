@@ -52,8 +52,13 @@ class Collection extends Controller {
 	  * Display card details.
 	  */
 	def card(id: String) = UserAction.async { implicit req =>
-		(for ((card, quantity) <- Query.cardDetail(id, req.user.name)) yield {
-			Ok(views.html.card(card, quantity))
+		val user = req.optUser.map(_.name).orNull
+		(for {
+			(card, quantity) <- Query.cardDetail(id, user)
+			combos <- Query.cardCombos(card.id, user)
+			decks <- Query.decksContaining(card.id, card.version, user)
+		} yield {
+			Ok(views.html.card(card, quantity, combos, decks))
 		}).recover { case _ =>
 			NotFound(views.html.error("Not found", "This cards does not seem to exist.", id))
 		}

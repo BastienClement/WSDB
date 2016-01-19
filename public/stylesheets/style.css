@@ -72,7 +72,7 @@ body {
 	transform: scale(1.4) rotate(-45deg);
 }
 
-.card[quantity="0"] img {
+.card[quantity="0"]:not([readonly]) img {
 	opacity: 0.5;
 	-webkit-filter: grayscale(100%);
 	-moz-filter: grayscale(100%);
@@ -154,6 +154,10 @@ body {
 }
 
 .card[big] .card-label {
+	display: none;
+}
+
+.card[readonly] .card-strip {
 	display: none;
 }
 

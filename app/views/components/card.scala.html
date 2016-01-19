@@ -1,7 +1,10 @@
 @import views.Utils
 @import models.Query.DeckData
 @(card: CompleteCard, quantity: Int = 0, big: Boolean = false, deck: DeckData = null)(implicit request: UserRequest[_])
-<div class="card" @if(!big) { quantity="@quantity" } else { big="1" } color="@card.color" title="@card.name"
+<div class="card"
+	@if(!big) { quantity="@quantity" } else { big="1" }
+	@if(!request.authenticated) { readonly="1" }
+	color="@card.color" title="@card.name"
 		data-id="@card.identifier" data-card="@card.id" data-version="@card.version">
 	<div class="card-img">
 		<img src="@Utils.cardImageURL(card.identifier)">

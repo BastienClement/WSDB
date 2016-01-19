@@ -22,7 +22,8 @@ class Global extends Controller {
 		Ok {
 			JavaScriptReverseRouter("routes")(
 				routes.javascript.Collection.update,
-				routes.javascript.Decks.update
+				routes.javascript.Decks.update,
+				routes.javascript.Collection.card
 			)
 		}
 	}

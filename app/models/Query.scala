@@ -74,6 +74,21 @@ object Query {
 		}.result.head.run
 	}
 
+	def cardCombos(card: String, user: String) = sql"""
+		SELECT c.*, IFNULL(col.quantity, 0)
+		FROM combos AS cb
+		INNER JOIN complete_cards AS c ON c.id = cb.card
+		LEFT JOIN collections AS col ON col.card = c.id AND col.version = c.version AND col.user = $user
+		WHERE cb.id IN (SELECT id FROM combos WHERE card = $card)
+		AND c.name != (SELECT NAME FROM cards WHERE id = $card LIMIT 1)
+	""".as[(CompleteCard, Int)].run
+
+	def decksContaining(card: String, version: String, user: String) = sql"""
+		SELECT DISTINCT deck_id, deck_name, quantity
+		FROM deck_cards
+      WHERE id = $card AND version = $version AND deck_user = $user
+	""".as[(Int, String, Int)].run
+
 	// ---------------------------------
 	// Decks
 	// ---------------------------------

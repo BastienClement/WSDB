@@ -1,5 +1,5 @@
 @import views.Page
-@(card: CompleteCard, quantity: Int)(implicit request: UserRequest[_])
+@(card: CompleteCard, quantity: Int, combos: Iterable[(CompleteCard, Int)], decks: Iterable[(Int, String, Int)])(implicit request: UserRequest[_])
 @main(card.name, Page.Collection) {
 	<div class="page-header">
 		<h2><span style="color: #999;">Card:</span> @card.name <small>(@card.identifier)</small></h2>
@@ -15,14 +15,16 @@
 				<div class="panel-body" style="display: flex; justify-content: center; padding: 15px 5px;">
 					@views.html.components.card(card, quantity, big = true)
 				</div>
-				<div class="panel-footer small">
-					<div class="text-center"><strong>Owned</strong></div>
-					<div style="display: flex; justify-content: space-between; align-items: center;">
-						<button id="btn-minus" class="btn btn-default btn-xs" style="width: 30px;">-</button>
-						<span id="card-qte">@quantity</span>
-						<button id="btn-plus" class="btn btn-default btn-xs" style="width: 30px;">+</button>
+				@if(request.authenticated) {
+					<div class="panel-footer small">
+						<div class="text-center"><strong>Owned</strong></div>
+						<div style="display: flex ; justify-content: space-between ; align-items: center ;">
+							<button id="btn-minus" class="btn btn-default btn-xs" style="width: 30px ;">-</button>
+							<span id="card-qte">@quantity</span>
+							<button id="btn-plus" class="btn btn-default btn-xs" style="width: 30px ;">+</button>
+						</div>
 					</div>
-				</div>
+				}
 				@if(request.deck.isDefined) {
 					<div class="panel-footer small">
 						<div class="text-center">
@@ -97,18 +99,61 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-6">
+		<div class="@if(request.authenticated) { col-md-6 } else { col-md-12 }">
 			<div class="panel panel-info">
 				<div class="panel-heading">Possible combo with this card</div>
-				<div class="panel-body">...</div>
+				<div class="panel-body">
+					@if(combos.nonEmpty) {
+						@views.html.components.cards_list(combos)
+					} else {
+						<div class="alert alert-warning" style="margin-bottom: 0;">
+							No combo found with this card...
+						</div>
+					}
+				</div>
 			</div>
 		</div>
-		<div class="col-md-6">
-			<div class="panel panel-info">
-				<div class="panel-heading">Decks containing this card</div>
-				<div class="panel-body">...</div>
+		@if(request.authenticated) {
+			<div class="col-md-6">
+				<div class="panel panel-info">
+					<div class="panel-heading">Decks containing this card</div>
+					<div class="panel-body">
+					@if(decks.nonEmpty) {
+						<table class="table" style="margin: 0 ;">
+							<thead>
+								<tr>
+									<th style="width: 30px;"></th>
+									<th>Name</th>
+									<th>Quantity</th>
+									<th class="text-right">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								@for((id, name, qte) <- decks) {
+									<tr>
+										<td style="color: #999;">#@id</td>
+										<td><a href="@routes.Decks.view(id)">@name</a></td>
+										<td><span class="label label-primary">@qte</span></td>
+										<td style="width: 30px ;" class="text-right">
+										@if(request.deck_id.contains(id)) {
+											<a href="@routes.Decks.unselect()" class="btn btn-xs btn-primary">Done</a>
+										} else {
+											<a href="@routes.Decks.select(id)" class="btn btn-xs btn-default">Edit</a>
+										}
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					} else {
+						<div class="alert alert-warning" style="margin-bottom: 0 ;">
+							You have no deck containing this card.
+						</div>
+					}
+					</div>
+				</div>
 			</div>
-		</div>
+		}
 	</div>
 	<script>
 		var qte = @quantity;
