@@ -54,9 +54,16 @@ object CompleteCards extends TableQuery(new CompleteCards(_)) {
 		val params = request.queryString.mapValues(v => v.head).toList
 
 		def applyFilters(req: CardQuery, qs: List[(String, String)]): CardQuery = qs match {
-			case (key, value) :: tail => applyFilters(key match {
-				case "rarity" => req.filter(_.rarity === value)
-				case _ => req
+			case (key, value) :: tail => applyFilters({
+				lazy val int_val = value.toInt
+				key match {
+					case "rarity" => req.filter(_.rarity === value)
+					case "level" => req.filter(_.level === value)
+					case "type" => req.filter(_.tpe === value)
+					case "trait" => req.filter(c => c.trait1_id === int_val || c.trait2_id === int_val)
+					case "cost" => req.filter(_.cost === value)
+					case _ => req
+				}
 			}, tail)
 			case Nil => req
 		}
