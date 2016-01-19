@@ -41,25 +41,22 @@
 		}
 		</div>
 	</div>
-	<script>
-		function handle_click(e) {
-			if (e.target.tagName == "A") return;
+	@if(!request.authenticated) {
+		<script>
+			function handle_click(e) {
+				if (e.target.tagName == "A") return;
 
-			e.preventDefault();
-			e.stopImmediatePropagation();
+				e.preventDefault();
+				e.stopImmediatePropagation();
 
-			var target = e.currentTarget;
+				var target = e.currentTarget;
 
-			var mod;
-			switch (e.button) {
-				case 2: mod = -1; break;
-				case 0: mod = +1; break;
-			}
+				var mod;
+				switch (e.button) {
+					case 2: mod = -1; break;
+					case 0: mod = +1; break;
+				}
 
-			@if(!request.authenticated) {
-				var uid = target.dataset.card + target.dataset.version;
-				document.location = routes.controllers.Collection.card(uid).url;
-			} else {
 				@if(request.deck.isDefined) {
 					var id = target.dataset.card;
 					var version = target.dataset.version;
@@ -82,8 +79,8 @@
 					}
 				}
 			}
-		}
 
-		$(".card").click(handle_click).contextmenu(handle_click);
-	</script>
+			$(".card").click(handle_click).contextmenu(handle_click);
+		</script>
+	}
 }
