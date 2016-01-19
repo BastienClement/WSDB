@@ -59,27 +59,29 @@
 			@if(!request.authenticated) {
 				var uid = target.dataset.card + target.dataset.version;
 				document.location = routes.controllers.Collection.card(uid).url;
-			} else { if(request.deck.isDefined) {
-				var id = target.dataset.card;
-				var version = target.dataset.version;
-				update_deck(id, version, mod, function(res) {
-					$("#sidebar-deck").replaceWith(res);
-					var qte_indicator = $(".card-deckqte", target)[0];
-					var qte = Math.max(0, parseInt(qte_indicator.dataset.qte) + mod);
-					qte_indicator.dataset.qte = qte;
-					$(".label", qte_indicator).text(qte);
-				}, true);
 			} else {
-				var old_qte = parseInt(target.getAttribute("quantity"));
-				var qte = Math.max(0, old_qte + mod);
+				@if(request.deck.isDefined) {
+					var id = target.dataset.card;
+					var version = target.dataset.version;
+					update_deck(id, version, mod, function(res) {
+						$("#sidebar-deck").replaceWith(res);
+						var qte_indicator = $(".card-deckqte", target)[0];
+						var qte = Math.max(0, parseInt(qte_indicator.dataset.qte) + mod);
+						qte_indicator.dataset.qte = qte;
+						$(".label", qte_indicator).text(qte);
+					}, true);
+				} else {
+					var old_qte = parseInt(target.getAttribute("quantity"));
+					var qte = Math.max(0, old_qte + mod);
 
-				target.setAttribute("quantity", qte);
-				$(".card-strip div", target).text(qte);
+					target.setAttribute("quantity", qte);
+					$(".card-strip div", target).text(qte);
 
-				if (qte != old_qte) {
-					update_card(target.dataset, mod);
+					if (qte != old_qte) {
+						update_card(target.dataset, mod);
+					}
 				}
-			}}
+			}
 		}
 
 		$(".card").click(handle_click).contextmenu(handle_click);
